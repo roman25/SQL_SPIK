@@ -26,10 +26,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    credentials.cpp \
+    errors_interpretation.cpp \
+    process_results.cpp \
+    setdate.cpp \
+    sql_expressions.cpp \
+    uploadtosql.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    credentials.h \
+    errors_interpretation.h \
+    process_results.h \
+    resource.h \
+    setdate.h \
+    sql_expressions.h \
+    uploadtosql.h
 
 FORMS += \
         mainwindow.ui
