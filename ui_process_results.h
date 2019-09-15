@@ -39,7 +39,7 @@ public:
         QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
         twResults->setHorizontalHeaderItem(2, __qtablewidgetitem2);
         twResults->setObjectName(QStringLiteral("twResults"));
-        twResults->setGeometry(QRect(10, 10, 256, 192));
+        twResults->setGeometry(QRect(10, 10, 361, 281));
 
         retranslateUi(ProcessResults);
 

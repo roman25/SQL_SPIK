@@ -51,9 +51,10 @@ void MainWindow::on_pbReport_clicked()
 				int finishMonth = dateSettings[5];
 				int finishYear = dateSettings[6];
 
-				sQuery = expession.selectionRangeDate.arg(QString::number(startYear), QString::number(finishYear),
-					QString::number(startMonth), QString::number(finishMonth),
-					QString::number(startDay), QString::number(finishDay));
+
+				sQuery = expession.selectionRangeDate.arg(QString::number(startYear), QString::number(startMonth), 
+					QString::number(startDay), QString::number(finishYear), QString::number(finishMonth),
+					QString::number(finishDay));
 			}
 			else
 			{
@@ -71,6 +72,7 @@ void MainWindow::on_pbReport_clicked()
 		{
 			sQuery = sQuery + expession.selectionAdditionalLotName.arg(lotName);
 		}
+
 
 		query.exec(sQuery);
 
@@ -101,6 +103,7 @@ void MainWindow::on_pbReport_clicked()
 		
 		int rows = 1;
 		QStringList results;
+
 		foreach(QString key, dataFromSQL.keys())
 		{
 			QString strRes = "0x";
@@ -111,7 +114,7 @@ void MainWindow::on_pbReport_clicked()
 			}
 			else
 			{
-				strRes += key + ";Undefined error;-";
+				strRes += key + ";Undefined error;" + QString::number(dataFromSQL[key]);
 			}
 			results.push_back(strRes);
 			rows++;

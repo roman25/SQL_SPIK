@@ -17,9 +17,7 @@ public:
 
 	QString selectionRangeDate = ("SELECT LotName, StartDateTime, FinishDateTime, MKM1, MKM2, MKM3, MKM4, MKM5, MKM6, MKM7, MKM8, DeviceAddress "
 		" FROM " + tableName +
-		" WHERE(	DATEPART(yy, StartDateTime) between  %1 and %2 "
-		" AND		DATEPART(mm, StartDateTime) between  %3 and %4 "
-		" AND		DATEPART(dd, StartDateTime) between  %5 and %6) ");
+		" WHERE (StartDateTime between '%1-%2-%3' AND '%4-%5-%6')");
 
 	QString selectionOnlyLotName = ("SELECT LotName, StartDateTime, FinishDateTime, MKM1, MKM2, MKM3, MKM4, MKM5, MKM6, MKM7, MKM8, DeviceAddress "
 		" FROM " + tableName +
