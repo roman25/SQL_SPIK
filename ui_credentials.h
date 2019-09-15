@@ -34,42 +34,50 @@ public:
     QLineEdit *lineServer;
     QLabel *lbServerName_2;
     QLineEdit *lineDbName;
+    QLabel *lbDriverName;
+    QLineEdit *lineDriver;
 
     void setupUi(QWidget *Credentials)
     {
         if (Credentials->objectName().isEmpty())
             Credentials->setObjectName(QStringLiteral("Credentials"));
-        Credentials->resize(269, 173);
+        Credentials->resize(310, 206);
         lbServerName = new QLabel(Credentials);
         lbServerName->setObjectName(QStringLiteral("lbServerName"));
-        lbServerName->setGeometry(QRect(10, 10, 81, 16));
+        lbServerName->setGeometry(QRect(10, 40, 81, 16));
         lbLogin = new QLabel(Credentials);
         lbLogin->setObjectName(QStringLiteral("lbLogin"));
-        lbLogin->setGeometry(QRect(10, 70, 81, 16));
+        lbLogin->setGeometry(QRect(10, 100, 81, 16));
         lbPassword = new QLabel(Credentials);
         lbPassword->setObjectName(QStringLiteral("lbPassword"));
-        lbPassword->setGeometry(QRect(10, 100, 81, 16));
+        lbPassword->setGeometry(QRect(10, 130, 81, 16));
         lineLogin = new QLineEdit(Credentials);
         lineLogin->setObjectName(QStringLiteral("lineLogin"));
-        lineLogin->setGeometry(QRect(110, 70, 151, 20));
+        lineLogin->setGeometry(QRect(110, 100, 191, 20));
         linePassword = new QLineEdit(Credentials);
         linePassword->setObjectName(QStringLiteral("linePassword"));
-        linePassword->setGeometry(QRect(110, 100, 151, 20));
+        linePassword->setGeometry(QRect(110, 130, 191, 20));
         pbOk = new QPushButton(Credentials);
         pbOk->setObjectName(QStringLiteral("pbOk"));
-        pbOk->setGeometry(QRect(40, 140, 75, 23));
+        pbOk->setGeometry(QRect(40, 170, 75, 23));
         pbCancel = new QPushButton(Credentials);
         pbCancel->setObjectName(QStringLiteral("pbCancel"));
-        pbCancel->setGeometry(QRect(140, 140, 75, 23));
+        pbCancel->setGeometry(QRect(140, 170, 75, 23));
         lineServer = new QLineEdit(Credentials);
         lineServer->setObjectName(QStringLiteral("lineServer"));
-        lineServer->setGeometry(QRect(110, 10, 151, 20));
+        lineServer->setGeometry(QRect(110, 40, 191, 20));
         lbServerName_2 = new QLabel(Credentials);
         lbServerName_2->setObjectName(QStringLiteral("lbServerName_2"));
-        lbServerName_2->setGeometry(QRect(10, 40, 81, 16));
+        lbServerName_2->setGeometry(QRect(10, 70, 81, 16));
         lineDbName = new QLineEdit(Credentials);
         lineDbName->setObjectName(QStringLiteral("lineDbName"));
-        lineDbName->setGeometry(QRect(110, 40, 151, 20));
+        lineDbName->setGeometry(QRect(110, 70, 191, 20));
+        lbDriverName = new QLabel(Credentials);
+        lbDriverName->setObjectName(QStringLiteral("lbDriverName"));
+        lbDriverName->setGeometry(QRect(10, 10, 81, 16));
+        lineDriver = new QLineEdit(Credentials);
+        lineDriver->setObjectName(QStringLiteral("lineDriver"));
+        lineDriver->setGeometry(QRect(110, 10, 191, 20));
 
         retranslateUi(Credentials);
 
@@ -87,6 +95,8 @@ public:
         lineServer->setText(QApplication::translate("Credentials", "DESKTOP-IAHG3FS\\SQLEXPRESS", nullptr));
         lbServerName_2->setText(QApplication::translate("Credentials", "Database name", nullptr));
         lineDbName->setText(QApplication::translate("Credentials", "SpikSQL", nullptr));
+        lbDriverName->setText(QApplication::translate("Credentials", "Driver name", nullptr));
+        lineDriver->setText(QApplication::translate("Credentials", "QODBC3", nullptr));
     } // retranslateUi
 
 };

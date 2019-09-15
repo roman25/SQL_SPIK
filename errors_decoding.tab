@@ -1,0 +1,58 @@
+00	NoError
+01	FactoryBadblock
+02	User Bad block
+03	RDY never goes low after 10h command byte
+04	RDY never goes low after 11h command byte
+05	RDY never goes low after 15h command byte
+06	tPROGoutoflimit
+07	tLPROGoutoflimit
+08	tDBSYoutoflimit
+09	tCBSYoutoflimit
+0A	ProgramFail
+10	RDY never goes low after 30h command byte
+11	RDY never goes low after 32h command byte
+12	RDY never goes low after 31h command byte
+13	RDY never goes low after 3Fh command byte
+14	tRoutoflimit
+15	tRCBSYoutoflimit
+16	tDBSY outoflimit
+17	EccFail
+18	ReadRetryFail
+20	RDY never goes low after D0h command byte
+21	RDY never goes low after D1h command byte
+22	tBERSoutoflimit
+23	tDBSY outoflimit
+24	EraseFail
+30	RDY never goes low after FFh command byte
+31	RDY never goes low after FCh command byte
+32	RDY never goes low after FAh command byte
+33	tRST
+34	ResetFail
+40	RDY never goes low after EEh command byte
+41	RDY never goes low after EFh command byte
+42	tFEAT
+43	FeatFail
+50	RDY never goes low after EFhcommand byte
+51	RDY never goes low after ECh command byte
+52	tRoutoflimit
+53	tRoutoflimit
+54	Nofoundvalid UID
+55	ONFI not found
+56	JEDEC not found
+57	EXT not found
+58	ONFI don’t match in DIE
+59	JEDEC don’t match in DIE
+5A	EXT don’t match in DIE
+5B	ONFI don’t match in chip
+5C	JEDEC don’t match in chip
+5D	EXT don’t match in chip
+5E	ID don’t match in DIE
+5F	ID don’t match in chip
+60	Global timeout
+61	No data output
+62	Status check fail
+63	Unsupported timing mode
+64	Bad block at the beginning of target
+65	Bad block count overflow
+66	Zero parameters
+67	ECC conversion error

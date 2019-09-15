@@ -93,6 +93,8 @@ void SetDate::on_pbOk_clicked()
 	dateSettings.push_back(ui->cbFinishMonth->currentIndex() + 1);
 	dateSettings.push_back(ui->cbFinishYear->currentIndex() + 1);
 
+	lotName = ui->lineLotName->text();
+	useLotName = ui->cbUseLotName->checkState();
 	// Close UI
 	QDialog::accept();
 	close();
@@ -112,4 +114,14 @@ void SetDate::on_pbCancel_clicked()
 QList <int> SetDate::getDateSettings()
 {
 	return dateSettings;
+}
+
+QString SetDate::getLotName()
+{
+	return lotName;
+}
+
+bool SetDate::getUseOnlyLotName()
+{
+	return useLotName;
 }

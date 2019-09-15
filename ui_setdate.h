@@ -17,6 +17,7 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QWidget>
 
@@ -36,12 +37,14 @@ public:
     QComboBox *cbStartYear;
     QPushButton *pbOk;
     QPushButton *pbCancel;
+    QLineEdit *lineLotName;
+    QCheckBox *cbUseLotName;
 
     void setupUi(QWidget *SetDate)
     {
         if (SetDate->objectName().isEmpty())
             SetDate->setObjectName(QStringLiteral("SetDate"));
-        SetDate->resize(338, 190);
+        SetDate->resize(338, 235);
         gbFinish = new QGroupBox(SetDate);
         gbFinish->setObjectName(QStringLiteral("gbFinish"));
         gbFinish->setGeometry(QRect(10, 70, 321, 81));
@@ -71,10 +74,16 @@ public:
         cbStartYear->setGeometry(QRect(240, 20, 69, 22));
         pbOk = new QPushButton(SetDate);
         pbOk->setObjectName(QStringLiteral("pbOk"));
-        pbOk->setGeometry(QRect(160, 160, 75, 23));
+        pbOk->setGeometry(QRect(160, 200, 75, 23));
         pbCancel = new QPushButton(SetDate);
         pbCancel->setObjectName(QStringLiteral("pbCancel"));
-        pbCancel->setGeometry(QRect(250, 160, 75, 23));
+        pbCancel->setGeometry(QRect(250, 200, 75, 23));
+        lineLotName = new QLineEdit(SetDate);
+        lineLotName->setObjectName(QStringLiteral("lineLotName"));
+        lineLotName->setGeometry(QRect(120, 160, 111, 20));
+        cbUseLotName = new QCheckBox(SetDate);
+        cbUseLotName->setObjectName(QStringLiteral("cbUseLotName"));
+        cbUseLotName->setGeometry(QRect(30, 150, 71, 41));
 
         retranslateUi(SetDate);
 
@@ -89,6 +98,10 @@ public:
         gbStart->setTitle(QApplication::translate("SetDate", "Start date", nullptr));
         pbOk->setText(QApplication::translate("SetDate", "OK", nullptr));
         pbCancel->setText(QApplication::translate("SetDate", "Cancel", nullptr));
+        lineLotName->setText(QString());
+        lineLotName->setPlaceholderText(QApplication::translate("SetDate", "Enter lot name", nullptr));
+        cbUseLotName->setText(QApplication::translate("SetDate", "Use only\n"
+"lot name", nullptr));
     } // retranslateUi
 
 };

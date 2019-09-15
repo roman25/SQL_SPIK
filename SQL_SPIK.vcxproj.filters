@@ -52,6 +52,18 @@
     <ClCompile Include="setdate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="uploadtosql.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="errors_decoding.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="errors_interpretation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="process_results.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -61,6 +73,15 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="setdate.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="uploadtosql.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="errors_interpretation.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="process_results.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -85,10 +106,19 @@
     <QtUic Include="setdate.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="process_results.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sql_expressions.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="errors_decoding.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -40,6 +40,19 @@
      <string>Form report</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pbUploadToSql">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>120</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Upload to SQL</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">

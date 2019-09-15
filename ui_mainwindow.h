@@ -28,6 +28,7 @@ public:
     QWidget *centralWidget;
     QPushButton *pbConnect;
     QPushButton *pbReport;
+    QPushButton *pbUploadToSql;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -44,6 +45,9 @@ public:
         pbReport = new QPushButton(centralWidget);
         pbReport->setObjectName(QStringLiteral("pbReport"));
         pbReport->setGeometry(QRect(20, 70, 91, 31));
+        pbUploadToSql = new QPushButton(centralWidget);
+        pbUploadToSql->setObjectName(QStringLiteral("pbUploadToSql"));
+        pbUploadToSql->setGeometry(QRect(20, 120, 91, 31));
         MainWindow->setCentralWidget(centralWidget);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -62,6 +66,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         pbConnect->setText(QApplication::translate("MainWindow", "Connect to SQL", nullptr));
         pbReport->setText(QApplication::translate("MainWindow", "Form report", nullptr));
+        pbUploadToSql->setText(QApplication::translate("MainWindow", "Upload to SQL", nullptr));
     } // retranslateUi
 
 };

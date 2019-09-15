@@ -20,9 +20,6 @@ private:
 	Ui::Credentials* ui;
 	QStringList listCredentials;
 
-	QString serverName, dbName, login, password;
-
-
 private slots:	
 	void on_pbOk_clicked();
 	void on_pbCancel_clicked();

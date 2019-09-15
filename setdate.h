@@ -13,11 +13,15 @@ public:
 	SetDate(QWidget *parent = Q_NULLPTR);
 	~SetDate();
 	QList <int> getDateSettings();
+	QString getLotName();
+	bool getUseOnlyLotName();
 
 private:
 	Ui::SetDate* ui;
 
 	QList <int> dateSettings;
+	QString lotName;
+	bool useLotName;
 
 private slots:
 	void on_pbOk_clicked();
