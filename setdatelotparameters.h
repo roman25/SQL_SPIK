@@ -4,14 +4,15 @@
 #include "ui_setdate.h"
 #include "QDebug"
 #include <QDialog>
+#include <QDir>
 
-class SetDate : public QDialog
+class SetDateLotParameters : public QDialog
 {
 	Q_OBJECT
 
 public:
-	SetDate(QWidget *parent = Q_NULLPTR);
-	~SetDate();
+	SetDateLotParameters(QWidget *parent = Q_NULLPTR);
+	~SetDateLotParameters();
 	QList <int> getDateSettings();
 	QString getLotName();
 	bool getUseOnlyLotName();

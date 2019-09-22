@@ -49,19 +49,19 @@
     <ClCompile Include="sql_expressions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="setdate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="uploadtosql.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="errors_decoding.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="errors_interpretation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="process_results.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="formreportbylot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="setdatelotparameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -72,9 +72,6 @@
     <QtMoc Include="credentials.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="setdate.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="uploadtosql.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -82,6 +79,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="process_results.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="formreportbylot.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="setdatelotparameters.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -115,9 +118,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="errors_decoding.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

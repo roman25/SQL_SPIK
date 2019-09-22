@@ -5,7 +5,7 @@
 struct SQLQueries
 {
 private:
-	const QString tableName = "TestInfo2";
+	const QString tableName = "TestInfo";
 	
 
 public:	

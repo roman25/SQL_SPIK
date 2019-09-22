@@ -1,8 +1,7 @@
 #include "uploadtosql.h"
 #include <QDebug>
 
-UploadToSQL::UploadToSQL(QWidget *parent)
-	: QDialog(parent)
+UploadToSQL::UploadToSQL()
 {
 	ui.setupUi(this);
 		
@@ -17,7 +16,11 @@ UploadToSQL::~UploadToSQL()
 
 QStringList UploadToSQL::GetFiles()
 {
-	QStringList listFiles = QFileDialog::getOpenFileNames(this, "Open File", "", "*.csv");
+	QString dirWithFiles = QFileDialog::getExistingDirectory(this, tr("Open Directory"));
+	QDir recoredDir(dirWithFiles);
+
+	QStringList filters{"*.csv"};
+	QStringList listFiles = recoredDir.entryList(filters, QDir::Files);	
 
 	return listFiles;
 }
@@ -38,6 +41,7 @@ void UploadToSQL::ConvertCSV(QString dataPath)
 	SQLQueries expession;
 	
 
+	// add conditions, errors etc to GUI
 	if (csvFile.open(QIODevice::ReadOnly))
 	{
 		int count = 0;
@@ -68,6 +72,8 @@ void UploadToSQL::ConvertCSV(QString dataPath)
 			{
 				// Split line into list
 				QStringList tempList = line.split(";");
+
+				// no 20 in source data
 				startTime = "20" + tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
 					" " + tempList[1] + ":" + tempList[2] + ":00";
 				count++;
@@ -76,12 +82,12 @@ void UploadToSQL::ConvertCSV(QString dataPath)
 
 			if (line.contains("End >"))
 			{
-				count = 9999;
+				count = -1;
 				continue;
 			}
 
 
-			if (count == 9999)
+			if (count == -1)
 			{
 				// Split line into list
 				QStringList tempList = line.split(";");
@@ -125,6 +131,7 @@ void UploadToSQL::CreateTable()
 	SQLQueries expession;
 	QString sqlQuery = expession.createTable;
 
+	// add exceptions	
 	query.exec(sqlQuery);
 
 }

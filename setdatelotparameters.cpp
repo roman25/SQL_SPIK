@@ -1,7 +1,7 @@
-#include "setdate.h"
+#include "setdatelotparameters.h"
 #include <QDateTime>
 
-SetDate::SetDate(QWidget *parent)
+SetDateLotParameters::SetDateLotParameters(QWidget *parent)
 	: QDialog(parent),
 	ui(new Ui::SetDate)
 {
@@ -55,11 +55,11 @@ SetDate::SetDate(QWidget *parent)
 	ui->cbFinishYear->setDisabled(true);
 }
 
-SetDate::~SetDate()
+SetDateLotParameters::~SetDateLotParameters()
 {
 }
 
-void SetDate::on_cbRange_clicked()
+void SetDateLotParameters::on_cbRange_clicked()
 {
 	if (ui->cbRange->isChecked())
 	{
@@ -76,7 +76,7 @@ void SetDate::on_cbRange_clicked()
 		
 }
 
-void SetDate::on_pbOk_clicked()
+void SetDateLotParameters::on_pbOk_clicked()
 {
 	/*!
 	Gets data from UI and sets new values after push on OK button
@@ -100,7 +100,7 @@ void SetDate::on_pbOk_clicked()
 	close();
 }
 
-void SetDate::on_pbCancel_clicked()
+void SetDateLotParameters::on_pbCancel_clicked()
 {
 	/*!
 	Process Cancel button
@@ -111,17 +111,17 @@ void SetDate::on_pbCancel_clicked()
 	close();
 }
 
-QList <int> SetDate::getDateSettings()
+QList <int> SetDateLotParameters::getDateSettings()
 {
 	return dateSettings;
 }
 
-QString SetDate::getLotName()
+QString SetDateLotParameters::getLotName()
 {
 	return lotName;
 }
 
-bool SetDate::getUseOnlyLotName()
+bool SetDateLotParameters::getUseOnlyLotName()
 {
 	return useLotName;
 }

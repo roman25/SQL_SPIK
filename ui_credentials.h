@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
@@ -35,7 +36,7 @@ public:
     QLabel *lbServerName_2;
     QLineEdit *lineDbName;
     QLabel *lbDriverName;
-    QLineEdit *lineDriver;
+    QComboBox *cbDriver;
 
     void setupUi(QWidget *Credentials)
     {
@@ -57,6 +58,7 @@ public:
         linePassword = new QLineEdit(Credentials);
         linePassword->setObjectName(QStringLiteral("linePassword"));
         linePassword->setGeometry(QRect(110, 130, 191, 20));
+        linePassword->setEchoMode(QLineEdit::Password);
         pbOk = new QPushButton(Credentials);
         pbOk->setObjectName(QStringLiteral("pbOk"));
         pbOk->setGeometry(QRect(40, 170, 75, 23));
@@ -75,9 +77,18 @@ public:
         lbDriverName = new QLabel(Credentials);
         lbDriverName->setObjectName(QStringLiteral("lbDriverName"));
         lbDriverName->setGeometry(QRect(10, 10, 81, 16));
-        lineDriver = new QLineEdit(Credentials);
-        lineDriver->setObjectName(QStringLiteral("lineDriver"));
-        lineDriver->setGeometry(QRect(110, 10, 191, 20));
+        cbDriver = new QComboBox(Credentials);
+        cbDriver->addItem(QString());
+        cbDriver->addItem(QString());
+        cbDriver->addItem(QString());
+        cbDriver->addItem(QString());
+        cbDriver->addItem(QString());
+        cbDriver->addItem(QString());
+        cbDriver->addItem(QString());
+        cbDriver->addItem(QString());
+        cbDriver->addItem(QString());
+        cbDriver->setObjectName(QStringLiteral("cbDriver"));
+        cbDriver->setGeometry(QRect(110, 10, 191, 22));
 
         retranslateUi(Credentials);
 
@@ -90,13 +101,23 @@ public:
         lbServerName->setText(QApplication::translate("Credentials", "Server name", nullptr));
         lbLogin->setText(QApplication::translate("Credentials", "Login", nullptr));
         lbPassword->setText(QApplication::translate("Credentials", "Password", nullptr));
+        linePassword->setInputMask(QString());
         pbOk->setText(QApplication::translate("Credentials", "OK", nullptr));
         pbCancel->setText(QApplication::translate("Credentials", "Cancel", nullptr));
-        lineServer->setText(QApplication::translate("Credentials", "DESKTOP-IAHG3FS\\SQLEXPRESS", nullptr));
+        lineServer->setText(QString());
         lbServerName_2->setText(QApplication::translate("Credentials", "Database name", nullptr));
-        lineDbName->setText(QApplication::translate("Credentials", "SpikSQL", nullptr));
+        lineDbName->setText(QString());
         lbDriverName->setText(QApplication::translate("Credentials", "Driver name", nullptr));
-        lineDriver->setText(QApplication::translate("Credentials", "QODBC3", nullptr));
+        cbDriver->setItemText(0, QApplication::translate("Credentials", "QPSQL", nullptr));
+        cbDriver->setItemText(1, QApplication::translate("Credentials", "QODBC3", nullptr));
+        cbDriver->setItemText(2, QApplication::translate("Credentials", "QMYSQL", nullptr));
+        cbDriver->setItemText(3, QApplication::translate("Credentials", "QOCI", nullptr));
+        cbDriver->setItemText(4, QApplication::translate("Credentials", "QODBC", nullptr));
+        cbDriver->setItemText(5, QApplication::translate("Credentials", "QDB2", nullptr));
+        cbDriver->setItemText(6, QApplication::translate("Credentials", "QTDS", nullptr));
+        cbDriver->setItemText(7, QApplication::translate("Credentials", "QSQLITE", nullptr));
+        cbDriver->setItemText(8, QApplication::translate("Credentials", "QIBASE", nullptr));
+
     } // retranslateUi
 
 };

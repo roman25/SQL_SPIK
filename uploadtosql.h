@@ -14,7 +14,7 @@ class UploadToSQL : public QDialog
 	Q_OBJECT
 
 public:
-	UploadToSQL(QWidget *parent = Q_NULLPTR);
+	UploadToSQL();
 	void Upload();
 	~UploadToSQL();
 

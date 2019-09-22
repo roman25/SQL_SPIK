@@ -4,13 +4,10 @@
 #include <QMainWindow>
 #include "QDebug"
 #include <QtSql>
-#include <QDir>
 
-#include "credentials.h"
-#include "setdate.h"
-#include "sql_expressions.h"
-#include "uploadtosql.h"
-#include "process_results.h"
+
+
+#include "formreportbylot.h"
 
 namespace Ui
 {
@@ -27,16 +24,13 @@ public:
 
 private:
     Ui::MainWindow *ui;
-	Credentials* credentials;
-	SetDate* settingsDate;
-	ProcessResults* winResults;
-	UploadToSQL* uploadData;
-	
+
+	FormReportByLot* formReport;
 	void WriteReport(QStringList results);
 	QStringList listCSV;
 
-	bool setSQLConnection(QString driverName, QString serverName, QString dbName, QString login, QString password);
-	bool isConnected;
+
+
 
 private slots:
 	void on_pbConnect_clicked();
