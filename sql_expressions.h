@@ -27,8 +27,8 @@ public:
 
 	QString createTable = ("CREATE TABLE " + tableName + 
 		" (LotName VARCHAR (50) NOT NULL, "
-		" StartDateTime SMALLDATETIME NOT NULL, "
-		" FinishDateTime SMALLDATETIME NOT NULL, "
+		" StartDateTime DATETIME NOT NULL, "
+		" FinishDateTime DATETIME NOT NULL, "
 		" MKM1 VARCHAR (10), "
 		" MKM2 VARCHAR (10), "
 		" MKM3 VARCHAR (10), "
@@ -46,6 +46,8 @@ public:
 	QString updateFinishTime = ("UPDATE " + tableName +
 		" SET FinishDateTime = '%1' "
 		" WHERE StartDateTime = '%2' ");
+
+	QString setDateFortmat = ("SET DATEFORMAT ymd");
 
 	
 

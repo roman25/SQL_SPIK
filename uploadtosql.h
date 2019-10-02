@@ -8,6 +8,7 @@
 
 #include "sql_expressions.h"
 #include "ui_uploadtosql.h"
+#include "logging.h"
 
 class UploadToSQL : public QDialog
 {
@@ -20,6 +21,8 @@ public:
 
 private:
 	Ui::UploadToSQL ui;
+	QString dirWithFiles;
+	Logging* log;
 
 	QStringList GetFiles();
 	void ConvertCSV(QString dataPath);

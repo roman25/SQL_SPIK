@@ -2,7 +2,7 @@
 
 #include <QWidget>
 #include <QDir>
-#include <QDate>
+#include <QDateTime>
 #include <QTextStream>
 #include <QFileDialog>
 #include "ui_process_results.h"
@@ -12,10 +12,12 @@ class ProcessResults : public QWidget
 	Q_OBJECT
 
 public:
-	ProcessResults(QStringList result);
+	ProcessResults(QStringList result, QString pathToOutputReport);
 	~ProcessResults();
 
 	void WriteReport(QStringList results);
 private:
 	Ui::ProcessResults* ui;
+	QString m_pathToReport;
+
 };

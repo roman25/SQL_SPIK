@@ -2,8 +2,8 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 
-ProcessResults::ProcessResults(QStringList result)
-	: ui(new Ui::ProcessResults)
+ProcessResults::ProcessResults(QStringList result, QString pathToOutputReport)
+	: ui(new Ui::ProcessResults), m_pathToReport(pathToOutputReport)
 {
 	ui->setupUi(this);
 
@@ -29,10 +29,9 @@ ProcessResults::~ProcessResults()
 void ProcessResults::WriteReport(QStringList results)
 {
 	int rows = results.size();
-	QString pathToReport = QFileDialog::getExistingDirectory(this, tr("Choose a directory to save results"));
-	QDate date = QDate::currentDate();
+	QDateTime dateTime = QDateTime::currentDateTime();
 
-	QString filePath = pathToReport + "/" + "Summary_" + date.toString("yyyy_MM_dd") + ".csv";
+	QString filePath = m_pathToReport + "/" + "Summary_" + dateTime.toString("yyyy_MM_dd HH.mm.ss") + ".csv";
 	QFile file(filePath);
 
 	// Remove old report if it exists

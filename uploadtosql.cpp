@@ -5,18 +5,20 @@ UploadToSQL::UploadToSQL()
 {
 	ui.setupUi(this);
 		
+	log = new Logging();
 	CreateTable();
 		
 }
 
 UploadToSQL::~UploadToSQL()
 {
+	delete log;
 }
 
 
 QStringList UploadToSQL::GetFiles()
 {
-	QString dirWithFiles = QFileDialog::getExistingDirectory(this, tr("Open Directory"));
+	dirWithFiles = QFileDialog::getExistingDirectory(this, tr("Open Directory"));
 	QDir recoredDir(dirWithFiles);
 
 	QStringList filters{"*.csv"};
@@ -60,8 +62,9 @@ void UploadToSQL::ConvertCSV(QString dataPath)
 		{			
 
 			// Read a line
-			QString line = csvStream.readLine();
-			
+			QString line			= csvStream.readLine();
+			QStringList tempList	= line.split(";");
+
 			if (line.contains("Start >"))
 			{
 				count = 1;
@@ -70,12 +73,14 @@ void UploadToSQL::ConvertCSV(QString dataPath)
 			
 			if (count == 1)
 			{
-				// Split line into list
-				QStringList tempList = line.split(";");
+				// no '20' in year column of the source data
+				if (tempList[7].size() == 2)
+				{
+					tempList[7] = "20" + tempList[7];
+				}
 
-				// no 20 in source data
-				startTime = "20" + tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
-					" " + tempList[1] + ":" + tempList[2] + ":00";
+				startTime = tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
+					" " + tempList[1] + ":" + tempList[2] + ":" + tempList[3];
 				count++;
 			}
 
@@ -89,22 +94,30 @@ void UploadToSQL::ConvertCSV(QString dataPath)
 
 			if (count == -1)
 			{
-				// Split line into list
-				QStringList tempList = line.split(";");
-				finishTime = "20" + tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
-					" " + tempList[1] + ":" + tempList[2] + ":00";
+				// no '20' in year column of the source data
+				if (tempList[7].size() == 2)
+				{
+					tempList[7] = "20" + tempList[7];
+				}
+
+				finishTime = tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
+					" " + tempList[1] + ":" + tempList[2] + ":" + tempList[3];
 
 				QString sqlQuery = expession.updateFinishTime.arg(finishTime, startTime);
-				query.exec(sqlQuery);
+				bool updateFinishTime = query.exec(sqlQuery);
+
+				if (!updateFinishTime)
+				{
+					QString mes = "Some error occured when update finish time";
+					log->WriteIntoLog(mes);
+				}
+				break;
 			}
-
-
-			QStringList tempList = line.split(";");
 			
 			if (tempList[0] != "" && tempList[0] != "Device")
 			{
 
-				for (int i = 1; i < 9; i++)
+				for (int i = 1; i < tempList.size(); i++)
 				{
 					if (tempList[i].startsWith(" "))
 					{
@@ -117,10 +130,21 @@ void UploadToSQL::ConvertCSV(QString dataPath)
 					arg(tempList[1]).arg(tempList[2]).arg(tempList[3]).arg(tempList[4]).
 					arg(tempList[5]).arg(tempList[6]).arg(tempList[7]).arg(tempList[8]).arg(tempList[0]);
 				
-				query.exec(sqlQuery);				
+				bool uploadData = query.exec(sqlQuery);
+
+				if (!uploadData)
+				{
+					QString mes = "Some error occured while " + nameWithExt + " uploading";
+					log->WriteIntoLog(mes);
+				}
 			}
 			count++;
 		}
+	}
+	else
+	{
+		QString mes = "Can not open " + dataPath;
+		log->WriteIntoLog(mes);
 	}
 }
 
@@ -132,7 +156,13 @@ void UploadToSQL::CreateTable()
 	QString sqlQuery = expession.createTable;
 
 	// add exceptions	
-	query.exec(sqlQuery);
+	bool tableCreated = query.exec(sqlQuery);
+
+	if (!tableCreated)
+	{
+		QString mes = "Can not create table";
+		log->WriteIntoLog(mes);
+	}
 
 }
 
@@ -142,7 +172,7 @@ void UploadToSQL::Upload()
 
 	for (int i = 0; i < listFiles.size(); i++)
 	{
-		QString filePath = listFiles[i];		
+		QString filePath = QDir(dirWithFiles).filePath(listFiles[i]);		
 		ConvertCSV(filePath);
 	}
 	

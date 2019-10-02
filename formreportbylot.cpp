@@ -3,14 +3,15 @@
 FormReportByLot::FormReportByLot()
 {
 	isConnected = false;
+	log = new Logging();
 }
 
 FormReportByLot::~FormReportByLot()
 {
-
+	delete log;
 }
 
-void FormReportByLot::JoinToSQLServer()
+QString FormReportByLot::JoinToSQLServer()
 {
 	credentials = new Credentials();
 
@@ -28,25 +29,32 @@ void FormReportByLot::JoinToSQLServer()
 	}
 
 	delete credentials;
+
+	return "0";
 }
 
-void FormReportByLot::UploadDataToSQL()
+QString FormReportByLot::UploadDataToSQL(QStringList pathToCSVFiles)
 {
-
+	QString statusUpload = "";
 	if (isConnected)
 	{
 		UploadToSQL* uploadData = new UploadToSQL();
 		uploadData->Upload();
 		delete uploadData;
+		statusUpload = "0";
 	}
 	else
 	{
+		statusUpload = "Connection to SQL not found";
 		QMessageBox msgBox;
 		msgBox.setIcon(QMessageBox::Warning);
 		msgBox.setWindowTitle("Warning!");
-		msgBox.setText("Connection to SQL not found");
+		msgBox.setText(statusUpload);
 		msgBox.exec();
+		
 	}
+
+	return statusUpload;
 }
 
 void FormReportByLot::setSQLConnection(QString driverName, QString serverName, QString dbName, QString login, QString password)
@@ -69,11 +77,16 @@ void FormReportByLot::setSQLConnection(QString driverName, QString serverName, Q
 	else
 	{
 		isConnected = true;
+		qDebug() << "Connected";		
+		SQLQueries expession;
+		QString sQuery = expession.setDateFortmat;
+		QSqlQuery query;
+		query.exec(sQuery);
 	}	
 }
 
 
-void FormReportByLot::FormReport()
+QString FormReportByLot::FormReport(QString pathToOutputReport)
 {
 	settingsDateLot = new SetDateLotParameters();
 
@@ -105,8 +118,10 @@ void FormReportByLot::FormReport()
 				int finishYear = dateSettings[6];
 
 
-				sQuery = expession.selectionRangeDate.arg(QString::number(startYear), QString::number(startMonth),
-				QString::number(startDay), QString::number(finishYear), QString::number(finishMonth),
+				sQuery = expession.selectionRangeDate.arg(QString::number(startYear), QString::number(startMonth), 
+				QString::number(startDay),				
+				QString::number(finishYear), 
+				QString::number(finishMonth),
 				QString::number(finishDay));
 			}
 			else
@@ -115,7 +130,7 @@ void FormReportByLot::FormReport()
 				int startMonth = dateSettings[1];
 				int startYear = dateSettings[2];
 
-				sQuery = expession.selectionByDate.arg(QString::number(startYear),
+				sQuery = expession.selectionByDate.arg(QString::number(startYear),				
 				QString::number(startMonth),
 				QString::number(startDay));
 			}
@@ -126,9 +141,7 @@ void FormReportByLot::FormReport()
 			sQuery = sQuery + expession.selectionAdditionalLotName.arg(lotName);
 		}
 
-
 		bool succsessQuery = query.exec(sQuery);
-
 		
 		if (succsessQuery)
 		{
@@ -174,7 +187,7 @@ void FormReportByLot::FormReport()
 					results.push_back(strRes);
 				}
 
-				winResults = new ProcessResults(results);
+				winResults = new ProcessResults(results, pathToOutputReport);
 				winResults->show();
 
 				winResults->WriteReport(results);
@@ -198,4 +211,6 @@ void FormReportByLot::FormReport()
 			msgBox.exec();
 		}
 	}
+
+	return "0";
 }

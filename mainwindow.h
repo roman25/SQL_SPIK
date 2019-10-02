@@ -5,8 +5,6 @@
 #include "QDebug"
 #include <QtSql>
 
-
-
 #include "formreportbylot.h"
 
 namespace Ui
@@ -26,11 +24,6 @@ private:
     Ui::MainWindow *ui;
 
 	FormReportByLot* formReport;
-	void WriteReport(QStringList results);
-	QStringList listCSV;
-
-
-
 
 private slots:
 	void on_pbConnect_clicked();
