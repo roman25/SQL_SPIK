@@ -25,24 +25,31 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
     credentials.cpp \
     errors_interpretation.cpp \
+    formreportbylot.cpp \
+    logging.cpp \
+    main.cpp \
+    mainwindow.cpp \
     process_results.cpp \
-    setdate.cpp \
+    setdatelotparameters.cpp \
     sql_expressions.cpp \
     uploadtosql.cpp
 
 HEADERS += \
-        mainwindow.h \
     credentials.h \
     errors_interpretation.h \
-    process_results.h \
-    resource.h \
-    setdate.h \
+    formreportbylot.h \
+    logging.h \
+    mainwindow.h \
+    process_results.h \    
+    setdatelotparameters.h \
     sql_expressions.h \
     uploadtosql.h
+    resource.h \
 
 FORMS += \
+        credentials.ui
         mainwindow.ui
+        process_results.ui
+        setdate.ui
