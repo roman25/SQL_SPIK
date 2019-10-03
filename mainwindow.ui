@@ -53,6 +53,19 @@
      <string>Upload to SQL</string>
     </property>
    </widget>
+   <widget class="QLabel" name="connectLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>240</y>
+      <width>68</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>No connection</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">

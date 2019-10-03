@@ -13,8 +13,9 @@ FormReportByLot::~FormReportByLot()
 
 QString FormReportByLot::JoinToSQLServer()
 {
-	credentials = new Credentials();
+	QString statusConnect = "0";
 
+	credentials = new Credentials();
 	if (credentials->exec() == QDialog::Accepted)
 	{
 		QStringList cred = credentials->getCredentials();
@@ -25,23 +26,43 @@ QString FormReportByLot::JoinToSQLServer()
 		QString login		= cred[3];
 		QString password	= cred[4];
 
-		setSQLConnection(driverName, serverName, dbName, login, password);
+		QSqlDatabase db = QSqlDatabase::addDatabase(driverName);
+		db.setDatabaseName("DRIVER={SQL Server};SERVER=" + serverName + ";DATABASE=" + dbName);
+		db.setUserName(login);
+		db.setPassword(password);
+
+		if (!db.open())
+		{
+			statusConnect = QSqlError(db.lastError()).text();
+			QMessageBox msgBox;
+			msgBox.setIcon(QMessageBox::Critical);
+			msgBox.setWindowTitle("Error!");
+			msgBox.setText(statusConnect);
+			msgBox.exec();
+		}
+		else
+		{
+			qDebug() << "Connected";
+			SQLQueries expession;
+			QString sQuery = expession.setDateFortmat;
+			QSqlQuery query;
+			query.exec(sQuery);
+		}
 	}
 
 	delete credentials;
 
-	return "0";
+	return statusConnect;
 }
 
 QString FormReportByLot::UploadDataToSQL(QStringList pathToCSVFiles)
 {
-	QString statusUpload = "";
+	QString statusUpload = "0";
 	if (isConnected)
 	{
 		UploadToSQL* uploadData = new UploadToSQL();
 		uploadData->Upload();
 		delete uploadData;
-		statusUpload = "0";
 	}
 	else
 	{
@@ -51,43 +72,17 @@ QString FormReportByLot::UploadDataToSQL(QStringList pathToCSVFiles)
 		msgBox.setWindowTitle("Warning!");
 		msgBox.setText(statusUpload);
 		msgBox.exec();
-		
+
 	}
 
 	return statusUpload;
 }
 
-void FormReportByLot::setSQLConnection(QString driverName, QString serverName, QString dbName, QString login, QString password)
-{
-	QSqlDatabase db = QSqlDatabase::addDatabase(driverName);
-
-	db.setDatabaseName("DRIVER={SQL Server};SERVER=" + serverName + ";DATABASE=" + dbName);
-	db.setUserName(login);
-	db.setPassword(password);
-
-	if (!db.open())
-	{
-		QString error = QSqlError(db.lastError()).text();
-		QMessageBox msgBox;
-		msgBox.setIcon(QMessageBox::Critical);
-		msgBox.setWindowTitle("Error!");
-		msgBox.setText(error);
-		msgBox.exec();
-	}
-	else
-	{
-		isConnected = true;
-		qDebug() << "Connected";		
-		SQLQueries expession;
-		QString sQuery = expession.setDateFortmat;
-		QSqlQuery query;
-		query.exec(sQuery);
-	}	
-}
-
-
 QString FormReportByLot::FormReport(QString pathToOutputReport)
 {
+
+	QString statusFormReport = "0";
+
 	settingsDateLot = new SetDateLotParameters();
 
 	if (settingsDateLot->exec() == QDialog::Accepted)
@@ -197,20 +192,21 @@ QString FormReportByLot::FormReport(QString pathToOutputReport)
 				QMessageBox msgBox;
 				msgBox.setIcon(QMessageBox::Information);
 				msgBox.setWindowTitle("Message");
-				msgBox.setText("No data on SQL server for your input parameters");
+				statusFormReport = "No data on SQL server for your input parameters";
+				msgBox.setText(statusFormReport);
 				msgBox.exec();
 			}
 		}
 		else
 		{
-			QString error = query.lastError().text();
+			statusFormReport = query.lastError().text();
 			QMessageBox msgBox;
 			msgBox.setIcon(QMessageBox::Critical);
 			msgBox.setWindowTitle("Error!");
-			msgBox.setText(error);
+			msgBox.setText(statusFormReport);
 			msgBox.exec();
 		}
 	}
 
-	return "0";
+	return statusFormReport;
 }

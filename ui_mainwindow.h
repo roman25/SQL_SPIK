@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
@@ -29,6 +30,7 @@ public:
     QPushButton *pbConnect;
     QPushButton *pbReport;
     QPushButton *pbUploadToSql;
+    QLabel *connectLabel;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -48,6 +50,9 @@ public:
         pbUploadToSql = new QPushButton(centralWidget);
         pbUploadToSql->setObjectName(QStringLiteral("pbUploadToSql"));
         pbUploadToSql->setGeometry(QRect(20, 120, 91, 31));
+        connectLabel = new QLabel(centralWidget);
+        connectLabel->setObjectName(QStringLiteral("connectLabel"));
+        connectLabel->setGeometry(QRect(10, 240, 68, 13));
         MainWindow->setCentralWidget(centralWidget);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -67,6 +72,7 @@ public:
         pbConnect->setText(QApplication::translate("MainWindow", "Connect to SQL", nullptr));
         pbReport->setText(QApplication::translate("MainWindow", "Form report", nullptr));
         pbUploadToSql->setText(QApplication::translate("MainWindow", "Upload to SQL", nullptr));
+        connectLabel->setText(QApplication::translate("MainWindow", "No connection", nullptr));
     } // retranslateUi
 
 };

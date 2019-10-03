@@ -29,7 +29,4 @@ private:
 	ProcessResults* winResults;
 	Logging* log;
 	bool isConnected;
-
-
-	void setSQLConnection(QString driverName, QString serverName, QString dbName, QString login, QString password);
 };

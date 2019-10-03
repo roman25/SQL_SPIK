@@ -5,7 +5,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);		
+    ui->setupUi(this);
+	ui->connectLabel->setStyleSheet("QLabel { background-color : red}");
 	formReport = new FormReportByLot();
 }
 
@@ -29,7 +30,13 @@ void MainWindow::on_pbConnect_clicked()
 {
 
 	QString statusConnection = formReport->JoinToSQLServer();
-	if (statusConnection != "0")
+	if (statusConnection == "0")
+	{
+		ui->connectLabel->setText("Connected");
+		ui->connectLabel->setStyleSheet("QLabel { background-color : green}");
+		
+	}
+	else
 	{
 		qDebug() << statusConnection;
 	}
