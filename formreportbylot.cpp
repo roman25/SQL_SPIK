@@ -1,7 +1,8 @@
 #include "formreportbylot.h"
 
-FormReportByLot::FormReportByLot()
+FormReportByLot::FormReportByLot(QString pathToDir)
 {
+    pathToResultFiles = pathToDir;
 	isConnected = false;
 	log = new Logging();
 }
@@ -13,28 +14,40 @@ FormReportByLot::~FormReportByLot()
 
 QString FormReportByLot::JoinToSQLServer()
 {
-	QString statusConnect = "0";
+    /*!
+        Creates connection to SQL server
+     */
 
+    // Save status of connection
+    QString statusConnect = "";
+
+    // Open window to get credentials
 	credentials = new Credentials();
 	if (credentials->exec() == QDialog::Accepted)
 	{
-		QStringList cred = credentials->getCredentials();
 
-		QString driverName	= cred[0];
+        // Get credentials to connect
+        QStringList cred    = credentials->getCredentials();
+        QString driverName	= cred[0];
 		QString serverName	= cred[1];
 		QString dbName		= cred[2];
 		QString login		= cred[3];
 		QString password	= cred[4];
 
+        // Create connection
 		QSqlDatabase db = QSqlDatabase::addDatabase(driverName);
 		db.setDatabaseName("DRIVER={SQL Server};SERVER=" + serverName + ";DATABASE=" + dbName);
 		db.setUserName(login);
 		db.setPassword(password);
 
+        // Test connection to database
 		if (!db.open())
 		{
-			statusConnect = QSqlError(db.lastError()).text();
-			QMessageBox msgBox;
+            // Get errors
+			statusConnect = QSqlError(db.lastError()).text();            
+
+            // Create window to show error
+            QMessageBox msgBox;
 			msgBox.setIcon(QMessageBox::Critical);
 			msgBox.setWindowTitle("Error!");
 			msgBox.setText(statusConnect);
@@ -42,11 +55,14 @@ QString FormReportByLot::JoinToSQLServer()
 		}
 		else
 		{
-			qDebug() << "Connected";
+            isConnected   = true;
+            statusConnect = "0";
 			SQLQueries expession;
+
+            // Set parameters of date format in SQL and execute the query
 			QString sQuery = expession.setDateFortmat;
 			QSqlQuery query;
-			query.exec(sQuery);
+            query.exec(sQuery);//где Обработка ошибки?!
 		}
 	}
 
@@ -57,11 +73,19 @@ QString FormReportByLot::JoinToSQLServer()
 
 QString FormReportByLot::UploadDataToSQL(QStringList pathToCSVFiles)
 {
-	QString statusUpload = "0";
-	if (isConnected)
+    /*!
+        Uploads data on SQL server
+    */
+
+    // Status of uploading
+    QString statusUpload = "";
+
+    // Upload if connection is present
+    if (isConnected)
 	{
-		UploadToSQL* uploadData = new UploadToSQL();
-		uploadData->Upload();
+        statusUpload = "0";
+        UploadToSQL* uploadData = new UploadToSQL(pathToResultFiles);
+        uploadData->Upload(pathToCSVFiles);//Where?! return status!!!
 		delete uploadData;
 	}
 	else
@@ -80,13 +104,18 @@ QString FormReportByLot::UploadDataToSQL(QStringList pathToCSVFiles)
 
 QString FormReportByLot::FormReport(QString pathToOutputReport)
 {
+    /*!
+        Forms output report based on input parameters
+     */
 
-	QString statusFormReport = "0";
+    QString statusFormReport = "";
 
+    // Open window with parameters
 	settingsDateLot = new SetDateLotParameters();
 
 	if (settingsDateLot->exec() == QDialog::Accepted)
 	{
+        // Get info about using of lot name
 		bool useLotNameOnly = settingsDateLot->getUseOnlyLotName();
 
 		QString sQuery;
@@ -186,6 +215,7 @@ QString FormReportByLot::FormReport(QString pathToOutputReport)
 				winResults->show();
 
 				winResults->WriteReport(results);
+                statusFormReport = "0";
 			}
 			else
 			{

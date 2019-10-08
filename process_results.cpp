@@ -7,6 +7,7 @@ ProcessResults::ProcessResults(QStringList result, QString pathToOutputReport)
 {
 	ui->setupUi(this);
 
+    log = new Logging();
 	int rows = result.size();
 	ui->twResults->setRowCount(rows);
 	ui->twResults->setColumnCount(3);
@@ -24,6 +25,7 @@ ProcessResults::ProcessResults(QStringList result, QString pathToOutputReport)
 
 ProcessResults::~ProcessResults()
 {
+    delete log;
 }
 
 void ProcessResults::WriteReport(QStringList results)
@@ -48,6 +50,11 @@ void ProcessResults::WriteReport(QStringList results)
 			stream << results[i] + "\n";
 		}
 	}
+    else
+    {
+        QString mes = "Some errors occured while creatig output report";
+        log->WriteIntoLog(mes);
+    }
 
 	file.close();
 }

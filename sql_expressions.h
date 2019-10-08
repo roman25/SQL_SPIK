@@ -49,6 +49,6 @@ public:
 
 	QString setDateFortmat = ("SET DATEFORMAT ymd");
 
-	
+    QString getTableName();
 
 };

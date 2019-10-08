@@ -5,6 +5,7 @@
 #include "QtSql"
 
 #include <QFileDialog>
+#include <QFileInfo>
 
 #include "sql_expressions.h"
 #include "ui_uploadtosql.h"
@@ -15,16 +16,16 @@ class UploadToSQL : public QDialog
 	Q_OBJECT
 
 public:
-	UploadToSQL();
-	void Upload();
+    UploadToSQL(QString path="");
+    void Upload(QStringList pathToCSVFiles);
 	~UploadToSQL();
 
 private:
 	Ui::UploadToSQL ui;
 	QString dirWithFiles;
 	Logging* log;
-
-	QStringList GetFiles();
+    QString pathToDir;
+    QStringList GetFiles(QString path);
 	void ConvertCSV(QString dataPath);
 	void CreateTable();
 	

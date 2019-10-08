@@ -15,7 +15,7 @@ class FormReportByLot : public QObject
 	Q_OBJECT
 
 public:
-	FormReportByLot();
+    FormReportByLot(QString pathToResultFiles = "");
 
 	QString UploadDataToSQL(QStringList pathToCSVFiles);
 	QString JoinToSQLServer();
@@ -23,7 +23,8 @@ public:
 
 	~FormReportByLot();
 
-private:	
+private:
+    QString pathToResultFiles;
 	Credentials* credentials;
 	SetDateLotParameters* settingsDateLot;
 	ProcessResults* winResults;

@@ -4,6 +4,8 @@
 #include <QMap>
 #include <QString>
 
+#include "logging.h"
+
 class ErrorsInterpretation : public QObject
 {
 	Q_OBJECT
@@ -16,4 +18,6 @@ public:
 	~ErrorsInterpretation();
 private:
 	const QString templateName = "errors_decoding.tab";
+
+    Logging* log;
 };

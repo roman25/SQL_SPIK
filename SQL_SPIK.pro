@@ -49,7 +49,7 @@ HEADERS += \
     resource.h \
 
 FORMS += \
-        credentials.ui
-        mainwindow.ui
-        process_results.ui
-        setdate.ui
+    credentials.ui \
+    mainwindow.ui \
+    process_results.ui \
+    setdatelotparameters.ui

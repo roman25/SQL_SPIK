@@ -6,6 +6,7 @@
 #include <QtSql>
 
 #include "formreportbylot.h"
+#include "logging.h"
 
 namespace Ui
 {
@@ -24,6 +25,7 @@ private:
     Ui::MainWindow *ui;
 
 	FormReportByLot* formReport;
+    Logging* log;
 
 private slots:
 	void on_pbConnect_clicked();

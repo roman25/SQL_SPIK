@@ -9,14 +9,7 @@ Logging::Logging()
 
 	file.setFileName(fullFilePath);
 	
-	if (file.open(QIODevice::ReadWrite))
-	{
-		stream.setDevice(&file);
-	}
-	else
-	{
-		WriteIntoLog("Some error occurred while creating log file");
-	}
+
 
 }
 
@@ -29,6 +22,10 @@ void Logging::WriteIntoLog(QString message)
 	QDateTime dateTime = QDateTime::currentDateTime();
 
 	QString time = dateTime.toString("dd-MMM HH:mm:ss");
-	stream << time << "\t"  << message << "\n";
-	
+    if (file.open(QIODevice::WriteOnly | QIODevice::Append))
+    {
+        stream.setDevice(&file);
+        stream << time << "\t"  << message << "\r\n";
+    }
+    file.close();
 }

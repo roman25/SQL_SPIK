@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include "ui_process_results.h"
+#include "logging.h"
 
 class ProcessResults : public QWidget
 {
@@ -19,5 +20,6 @@ public:
 private:
 	Ui::ProcessResults* ui;
 	QString m_pathToReport;
+    Logging* log;
 
 };
