@@ -1,10 +1,10 @@
 #include "uploadtosql.h"
 #include <QDebug>
 
-UploadToSQL::UploadToSQL(QString path)
+UploadToSQL::UploadToSQL(QString path) :
+    m_pathToDir(path)
 {
 	ui.setupUi(this);
-    pathToDir = path;//Error!!!  
 }
 
 UploadToSQL::~UploadToSQL()
@@ -217,7 +217,7 @@ QString UploadToSQL::CreateTable()
 	return statusCreateTable;
 }
 
-QString UploadToSQL::Upload(QStringList pathToCSVFiles)
+QString UploadToSQL::Upload(QStringList listCSVFiles)
 {
     /*!
         Reads input data and uploads on SQL
@@ -233,11 +233,11 @@ QString UploadToSQL::Upload(QStringList pathToCSVFiles)
     }
 
     // Iterate for every value in input list
-    for (int i = 0; i < pathToCSVFiles.size(); i++)
+    for (int i = 0; i < listCSVFiles.size(); i++)
     {
         // Get info about file
         // This is file or directory
-        QString path = pathToDir + "\\" + pathToCSVFiles[i];
+        QString path = m_pathToDir + "\\" + listCSVFiles[i];
         QFileInfo fInfo(path);
         bool isInputFile = fInfo.isFile();        
 

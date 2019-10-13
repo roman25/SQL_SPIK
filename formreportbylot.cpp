@@ -1,7 +1,7 @@
 #include "formreportbylot.h"
 
 FormReportByLot::FormReportByLot(QString pathToDir) :
-	pathToResultFiles(pathToDir)
+    m_pathToDirWithCSV(pathToDir)
 {    
 	isConnected = false;
 }
@@ -69,7 +69,7 @@ QString FormReportByLot::JoinToSQLServer()
 	return statusConnect;
 }
 
-QString FormReportByLot::UploadDataToSQL(QStringList pathToCSVFiles)
+QString FormReportByLot::UploadDataToSQL(QStringList listCSVFiles)
 {
     /*!
         Uploads data on SQL server
@@ -81,8 +81,8 @@ QString FormReportByLot::UploadDataToSQL(QStringList pathToCSVFiles)
     // Upload if connection is present
     if (isConnected)
 	{        
-        UploadToSQL* uploadData = new UploadToSQL(pathToResultFiles);
-		statusUpload = uploadData->Upload(pathToCSVFiles);
+        UploadToSQL* uploadData = new UploadToSQL(m_pathToDirWithCSV);
+		statusUpload = uploadData->Upload(listCSVFiles);
 		delete uploadData;
 
         if (statusUpload != "0")

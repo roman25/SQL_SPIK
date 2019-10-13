@@ -24,10 +24,9 @@ public:
 	~FormReportByLot();
 
 private:
-    QString pathToResultFiles;
+    QString m_pathToDirWithCSV;
 	Credentials* credentials;
 	SetDateLotParameters* settingsDateLot;
 	ProcessResults* winResults;
-	Logging* log;
 	bool isConnected;
 };

@@ -22,9 +22,8 @@ public:
 	
 private:
 	Ui::UploadToSQL ui;
-	QString dirWithFiles;
-	Logging* log;
-    QString pathToDir;
+	QString dirWithFiles;	
+    QString m_pathToDir;
 
     QStringList GetFiles(QString path);
 	QString ConvertCSV(QString dataPath);
