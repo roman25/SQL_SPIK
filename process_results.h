@@ -16,10 +16,11 @@ public:
 	ProcessResults(QStringList result, QString pathToOutputReport);
 	~ProcessResults();
 
-	void WriteReport(QStringList results);
+	QString WriteReport(QStringList results);
 private:
 	Ui::ProcessResults* ui;
-	QString m_pathToReport;
     Logging* log;
+	QString m_pathToReport;
+    
 
 };

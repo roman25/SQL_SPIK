@@ -7,7 +7,6 @@ ProcessResults::ProcessResults(QStringList result, QString pathToOutputReport)
 {
 	ui->setupUi(this);
 
-    log = new Logging();
 	int rows = result.size();
 	ui->twResults->setRowCount(rows);
 	ui->twResults->setColumnCount(3);
@@ -25,12 +24,14 @@ ProcessResults::ProcessResults(QStringList result, QString pathToOutputReport)
 
 ProcessResults::~ProcessResults()
 {
-    delete log;
+
 }
 
-void ProcessResults::WriteReport(QStringList results)
+QString ProcessResults::WriteReport(QStringList results)
 {
-	int rows = results.size();
+    QString statusWriteReport;
+
+	int rows           = results.size();
 	QDateTime dateTime = QDateTime::currentDateTime();
 
 	QString filePath = m_pathToReport + "/" + "Summary_" + dateTime.toString("yyyy_MM_dd HH.mm.ss") + ".csv";
@@ -52,9 +53,10 @@ void ProcessResults::WriteReport(QStringList results)
 	}
     else
     {
-        QString mes = "Some errors occured while creatig output report";
-        log->WriteIntoLog(mes);
+        statusWriteReport = "Some errors occurred while creatig output report";
     }
 
 	file.close();
+    statusWriteReport = "0";
+    return statusWriteReport;
 }

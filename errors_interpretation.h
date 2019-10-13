@@ -4,8 +4,6 @@
 #include <QMap>
 #include <QString>
 
-#include "logging.h"
-
 class ErrorsInterpretation : public QObject
 {
 	Q_OBJECT
@@ -13,11 +11,9 @@ class ErrorsInterpretation : public QObject
 public:
 	ErrorsInterpretation();
 
-	QMap <QString,  QString> getErrorsInterpretation();
+	QMap <int,  QString> getErrorsInterpretation();
 
 	~ErrorsInterpretation();
 private:
 	const QString templateName = "errors_decoding.tab";
-
-    Logging* log;
 };

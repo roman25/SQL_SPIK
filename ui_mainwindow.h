@@ -52,7 +52,7 @@ public:
         pbUploadToSql->setGeometry(QRect(20, 120, 91, 31));
         connectLabel = new QLabel(centralWidget);
         connectLabel->setObjectName(QStringLiteral("connectLabel"));
-        connectLabel->setGeometry(QRect(10, 240, 68, 13));
+        connectLabel->setGeometry(QRect(10, 240, 91, 16));
         MainWindow->setCentralWidget(centralWidget);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));

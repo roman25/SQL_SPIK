@@ -1,15 +1,13 @@
 #include "formreportbylot.h"
 
-FormReportByLot::FormReportByLot(QString pathToDir)
-{
-    pathToResultFiles = pathToDir;
+FormReportByLot::FormReportByLot(QString pathToDir) :
+	pathToResultFiles(pathToDir)
+{    
 	isConnected = false;
-	log = new Logging();
 }
 
 FormReportByLot::~FormReportByLot()
-{
-	delete log;
+{	
 }
 
 QString FormReportByLot::JoinToSQLServer()
@@ -19,7 +17,7 @@ QString FormReportByLot::JoinToSQLServer()
      */
 
     // Save status of connection
-    QString statusConnect = "";
+    QString statusConnect;
 
     // Open window to get credentials
 	credentials = new Credentials();
@@ -44,25 +42,25 @@ QString FormReportByLot::JoinToSQLServer()
 		if (!db.open())
 		{
             // Get errors
-			statusConnect = QSqlError(db.lastError()).text();            
-
-            // Create window to show error
-            QMessageBox msgBox;
-			msgBox.setIcon(QMessageBox::Critical);
-			msgBox.setWindowTitle("Error!");
-			msgBox.setText(statusConnect);
-			msgBox.exec();
+			statusConnect = QSqlError(db.lastError()).text();
 		}
 		else
 		{
-            isConnected   = true;
-            statusConnect = "0";
-			SQLQueries expession;
-
             // Set parameters of date format in SQL and execute the query
+			SQLQueries expession;
 			QString sQuery = expession.setDateFortmat;
+			
 			QSqlQuery query;
-            query.exec(sQuery);//где Обработка ошибки?!
+			bool execute = query.exec(sQuery);
+			if (!execute)
+			{
+				statusConnect = "Some errors occurred when change date format of SQL server";
+			}
+			else
+			{
+				isConnected   = true;
+                statusConnect = "0";
+			}
 		}
 	}
 
@@ -78,25 +76,23 @@ QString FormReportByLot::UploadDataToSQL(QStringList pathToCSVFiles)
     */
 
     // Status of uploading
-    QString statusUpload = "";
+    QString statusUpload;
 
     // Upload if connection is present
     if (isConnected)
-	{
-        statusUpload = "0";
+	{        
         UploadToSQL* uploadData = new UploadToSQL(pathToResultFiles);
-        uploadData->Upload(pathToCSVFiles);//Where?! return status!!!
+		statusUpload = uploadData->Upload(pathToCSVFiles);
 		delete uploadData;
+
+        if (statusUpload != "0")
+        {
+            return statusUpload;
+        }
 	}
 	else
 	{
 		statusUpload = "Connection to SQL not found";
-		QMessageBox msgBox;
-		msgBox.setIcon(QMessageBox::Warning);
-		msgBox.setWindowTitle("Warning!");
-		msgBox.setText(statusUpload);
-		msgBox.exec();
-
 	}
 
 	return statusUpload;
@@ -108,7 +104,7 @@ QString FormReportByLot::FormReport(QString pathToOutputReport)
         Forms output report based on input parameters
      */
 
-    QString statusFormReport = "";
+    QString statusFormReport;
 
     // Open window with parameters
 	settingsDateLot = new SetDateLotParameters();
@@ -134,13 +130,12 @@ QString FormReportByLot::FormReport(QString pathToOutputReport)
 
 			if (dateSettings[0] == 9999)
 			{
-				int startDay = dateSettings[1];
-				int startMonth = dateSettings[2];
-				int startYear = dateSettings[3];
-				int finishDay = dateSettings[4];
+				int startDay    = dateSettings[1];
+				int startMonth  = dateSettings[2];
+				int startYear   = dateSettings[3];
+				int finishDay   = dateSettings[4];
 				int finishMonth = dateSettings[5];
-				int finishYear = dateSettings[6];
-
+				int finishYear  = dateSettings[6];
 
 				sQuery = expession.selectionRangeDate.arg(QString::number(startYear), QString::number(startMonth), 
 				QString::number(startDay),				
@@ -150,9 +145,9 @@ QString FormReportByLot::FormReport(QString pathToOutputReport)
 			}
 			else
 			{
-				int startDay = dateSettings[0];
+				int startDay   = dateSettings[0];
 				int startMonth = dateSettings[1];
-				int startYear = dateSettings[2];
+				int startYear  = dateSettings[2];
 
 				sQuery = expession.selectionByDate.arg(QString::number(startYear),				
 				QString::number(startMonth),
@@ -173,15 +168,18 @@ QString FormReportByLot::FormReport(QString pathToOutputReport)
 
 			if (countRecords > 0)
 			{
-				QMap <QString, int> dataFromSQL;
+				QMap <int, int> dataFromSQL;
 				while (query.next())
 				{
 					for (int i = 3; i < 11; i++)
 					{
-						QString key = query.value(i).toString();
+                        QString strKey = query.value(i).toString();
+                        
+                        bool convert;
+                        int key = strKey.toInt(&convert, 16);
 						if (dataFromSQL.contains(key))
 						{
-							int value = dataFromSQL[key];
+							int value        = dataFromSQL[key];
 							dataFromSQL[key] = ++value;
 						}
 						else
@@ -192,21 +190,39 @@ QString FormReportByLot::FormReport(QString pathToOutputReport)
 				}
 
 				ErrorsInterpretation* erInter = new ErrorsInterpretation();
-				QMap <QString, QString> errors = erInter->getErrorsInterpretation();
+				QMap <int, QString> errors    = erInter->getErrorsInterpretation();                
 				delete erInter;
+
+                if (errors.contains(-1))
+                {
+                    QString statusErrorsInterpretation = errors[-1];
+                    return statusErrorsInterpretation;
+                }
 
 				QStringList results;
 
-				foreach(QString key, dataFromSQL.keys())
+				foreach(int key, dataFromSQL.keys())
 				{
 					QString strRes = "0x";
 					if (errors.contains(key))
 					{
-						strRes += key + ";" + errors[key] + ";" + QString::number(dataFromSQL[key]);
+                        QString errorType = QString::number(key, 16);
+                        if (errorType == "0")
+                        {
+                            errorType += "0";
+                        }
+
+						strRes += errorType + ";" + errors[key] + ";" + QString::number(dataFromSQL[key]);
 					}
 					else
 					{
-						strRes += key + ";Undefined error;" + QString::number(dataFromSQL[key]);
+                        QString errorType = QString::number(key, 16);
+                        if (errorType == "0")
+                        {
+                            errorType += "0";
+                        }
+
+						strRes += errorType + ";Undefined error;" + QString::number(dataFromSQL[key]);
 					}
 					results.push_back(strRes);
 				}
@@ -214,27 +230,22 @@ QString FormReportByLot::FormReport(QString pathToOutputReport)
 				winResults = new ProcessResults(results, pathToOutputReport);
 				winResults->show();
 
-				winResults->WriteReport(results);
+				QString statusWriteReport = winResults->WriteReport(results);
+                if (statusWriteReport != "0")
+                {
+                    return statusWriteReport;
+                }
                 statusFormReport = "0";
 			}
 			else
 			{
-				QMessageBox msgBox;
-				msgBox.setIcon(QMessageBox::Information);
-				msgBox.setWindowTitle("Message");
 				statusFormReport = "No data on SQL server for your input parameters";
-				msgBox.setText(statusFormReport);
-				msgBox.exec();
 			}
 		}
 		else
 		{
 			statusFormReport = query.lastError().text();
-			QMessageBox msgBox;
-			msgBox.setIcon(QMessageBox::Critical);
-			msgBox.setWindowTitle("Error!");
-			msgBox.setText(statusFormReport);
-			msgBox.exec();
+
 		}
 	}
 

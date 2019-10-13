@@ -7,8 +7,10 @@ struct SQLQueries
 private:
 	const QString tableName = "TestInfo";
 	
+public:
+    QString checkTableExists = "IF EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'" + tableName + "') "
+        "BEGIN PRINT 'Yes' END";
 
-public:	
 	QString selectionByDate	= ("SELECT LotName, StartDateTime, FinishDateTime, MKM1, MKM2, MKM3, MKM4, MKM5, MKM6, MKM7, MKM8, DeviceAddress "
 		" FROM " + tableName + 
 		" WHERE(	DATEPART(yy, StartDateTime) =  %1 "
@@ -48,7 +50,4 @@ public:
 		" WHERE StartDateTime = '%2' ");
 
 	QString setDateFortmat = ("SET DATEFORMAT ymd");
-
-    QString getTableName();
-
 };

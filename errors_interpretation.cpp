@@ -5,16 +5,15 @@
 
 ErrorsInterpretation::ErrorsInterpretation()	
 {
-    log = new Logging();
 }
 
 ErrorsInterpretation::~ErrorsInterpretation()
 {
-    delete log;
+ 
 }
 
 
-QMap <QString, QString> ErrorsInterpretation::getErrorsInterpretation()
+QMap <int, QString> ErrorsInterpretation::getErrorsInterpretation()
 {
     /*!
         Reads the template with descripton of errors
@@ -26,8 +25,8 @@ QMap <QString, QString> ErrorsInterpretation::getErrorsInterpretation()
     // Set full path to the template
 	QString fullFilePath = QDir(currentDirectory).filePath(templateName);
 
-    // Create map to save error and its description
-	QMap <QString, QString> errors;
+    // Create map to store error and its description
+	QMap <int, QString> errors;
 
 	// Read input file
 	QFile dataFile(fullFilePath);
@@ -39,23 +38,33 @@ QMap <QString, QString> ErrorsInterpretation::getErrorsInterpretation()
 		{
 
 			// Read a line
-            QString line    = csvStream.readLine();
+            QString line     = csvStream.readLine();
 			QStringList data = line.split("\t");
 
             // Get error
-			QString error		= data[0];
+            bool convert;
+			QString error = data[0];			
+			int numError  = error.toInt(&convert, 16);
 
-            // Get description of the error
-            QString description = data[1];
-
-            // Collect into map
-			errors[error] = description;
+			if (convert)
+			{
+				// Get description of the error and collect into map
+				QString description = data[1];
+				errors[numError]    = description;
+			}
+			else
+			{
+				QString mes = "Can not convert hex to dec in " + templateName;
+				errors[-1]	= mes;
+                return errors;
+			}
 		}
 	}
     else
     {
         QString mes = "Can not open the template with errors";
-        log->WriteIntoLog(mes);
+		errors[-1] = mes;
+        
     }
 	return errors;
 }

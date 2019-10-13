@@ -16,17 +16,18 @@ class UploadToSQL : public QDialog
 	Q_OBJECT
 
 public:
-    UploadToSQL(QString path="");
-    void Upload(QStringList pathToCSVFiles);
-	~UploadToSQL();
-
+    UploadToSQL(QString path = "");
+    ~UploadToSQL();
+	QString Upload(QStringList pathToCSVFiles);
+	
 private:
 	Ui::UploadToSQL ui;
 	QString dirWithFiles;
 	Logging* log;
     QString pathToDir;
+
     QStringList GetFiles(QString path);
-	void ConvertCSV(QString dataPath);
-	void CreateTable();
+	QString ConvertCSV(QString dataPath);
+	QString CreateTable();
 	
 };

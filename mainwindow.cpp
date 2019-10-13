@@ -6,8 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    formReport = new FormReportByLot("D:\\PROJECTS\\ATE_SPiK\\SQL\\Data");
-    log = new Logging();
+    formReport = new FormReportByLot("D:\\projects\\GS_docs\\SQL_SPIK");
+    log        = new Logging();
 
 }
 
@@ -25,13 +25,6 @@ void MainWindow::on_pbReport_clicked()
 	{
         log->WriteIntoLog(createReport);
     }
-
-    QString hex="0x00";
-    QString hex1="0xFA";
-    bool ok;
-    int h = hex.toInt(&ok, 16);
-    int h1 = hex1.toInt(&ok, 16);
-    qInfo()<<h<<" "<<h1;
 }
 
 
@@ -41,7 +34,8 @@ void MainWindow::on_pbConnect_clicked()
     if (statusConnection != "0")
     {
         log->WriteIntoLog(statusConnection);
-    }else{
+    }
+	else{
         ui->connectLabel->setText("Success connected");
     }
 }

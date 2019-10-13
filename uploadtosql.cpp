@@ -4,14 +4,11 @@
 UploadToSQL::UploadToSQL(QString path)
 {
 	ui.setupUi(this);
-    pathToDir = path;//Error!!!
-    // Create object to write log file
-    log = new Logging();
+    pathToDir = path;//Error!!!  
 }
 
 UploadToSQL::~UploadToSQL()
 {
-	delete log;
 }
 
 
@@ -31,11 +28,13 @@ QStringList UploadToSQL::GetFiles(QString path)
 	return listFiles;
 }
 
-void UploadToSQL::ConvertCSV(QString dataPath)
+QString UploadToSQL::ConvertCSV(QString dataPath)
 {
     /*!
         Reads csv and uploads to SQL server
     */
+
+	QString statusConvert;
 
     //Create object to get info about csv file
     QFileInfo inFile(dataPath);
@@ -70,10 +69,10 @@ void UploadToSQL::ConvertCSV(QString dataPath)
 		{			
 
 			// Read a line
-			QString line			= csvStream.readLine();
+			QString line = csvStream.readLine();
 
             // Split data to get components
-            QStringList tempList	= line.split(";");
+            QStringList tempList = line.split(";");
 
             // Find key row
 			if (line.contains("Start >"))
@@ -124,8 +123,12 @@ void UploadToSQL::ConvertCSV(QString dataPath)
                 bool updateFinishTime = query.exec(sqlQuery);
 				if (!updateFinishTime)
 				{
-					QString mes = "Some error occured when update finish time";
-					log->WriteIntoLog(mes);
+					statusConvert = "Some error occured when update finish time";
+					return statusConvert;
+				}
+				else
+				{
+					statusConvert = "0";
 				}
 				break;
 			}
@@ -153,8 +156,12 @@ void UploadToSQL::ConvertCSV(QString dataPath)
 				bool uploadData = query.exec(sqlQuery);
 				if (!uploadData)
 				{
-					QString mes = "Some error occured while " + nameWithExt + " uploading";
-					log->WriteIntoLog(mes);
+					statusConvert = "Some error occured while " + nameWithExt + " uploading";
+					return statusConvert;
+				}
+				else
+				{
+					statusConvert = "0";
 				}
 			}
 			count++;
@@ -162,16 +169,20 @@ void UploadToSQL::ConvertCSV(QString dataPath)
 	}
 	else
 	{
-		QString mes = "Can not open " + dataPath;
-		log->WriteIntoLog(mes);
+		statusConvert = "Can not open " + dataPath;
+		
 	}
+
+	return statusConvert;
 }
 
-void UploadToSQL::CreateTable()
+QString UploadToSQL::CreateTable()
 {
     /*!
         Creates table on SQL server
     */
+
+	QString statusCreateTable;
 
     // Get predefined SQL query
     SQLQueries expression;
@@ -184,31 +195,42 @@ void UploadToSQL::CreateTable()
     // Verify result of SQL execution
     if (!tableCreated)
     {       
-        // Get table name
-        QString tableName    = expression.getTableName();
-
-        // Search the table is present on SQL server
-        QSqlDatabase objDatabase;
-        QStringList dbTables = objDatabase.tables();
 
         // Test the table is exists
-        bool tableExist = dbTables.contains(tableName);
+        QString sqlQueryExists = expression.checkTableExists;            
+        bool tableExist = query.exec(sqlQueryExists);
+
         if (!tableExist)
         {
-            QString     mes = "Can not create table";
-            log->WriteIntoLog(mes);//Отлично в ЛОГ ФАЙл записал а что верхний уровень который взывал?! должен читать лог файлы??
+			statusCreateTable = "Can not create table";
+        }
+        else
+        {
+            statusCreateTable = "0";
         }
     }
+    else
+    {
+        statusCreateTable = "0";
+    }
+
+	return statusCreateTable;
 }
 
-void UploadToSQL::Upload(QStringList pathToCSVFiles)
+QString UploadToSQL::Upload(QStringList pathToCSVFiles)
 {
     /*!
         Reads input data and uploads on SQL
     */
 
+	QString statusUpload;
     // Create table on SQL server if it need
-    CreateTable();
+	statusUpload = CreateTable();
+
+    if (statusUpload != "0")
+    {
+        return statusUpload;
+    }
 
     // Iterate for every value in input list
     for (int i = 0; i < pathToCSVFiles.size(); i++)
@@ -217,34 +239,25 @@ void UploadToSQL::Upload(QStringList pathToCSVFiles)
         // This is file or directory
         QString path = pathToDir + "\\" + pathToCSVFiles[i];
         QFileInfo fInfo(path);
-        bool isInputFile = fInfo.isFile();
-        bool isInputDir  = fInfo.isDir();
+        bool isInputFile = fInfo.isFile();        
 
         // Check input data is file
         if (isInputFile)
         {
             // Upload input data
-            ConvertCSV(path);
-        }
-/*
-        // Check input data is directory
-        if (isInputDir)//БРЕД!!! НА ВХОД ПОДАЁТСЯ СПИСОК ФАЙЛОВ а ты проверяешь ли это директория?!
-        {
-            // Get files from input directory
-            QStringList listFiles = GetFiles(path);
+            QString statusConvert = ConvertCSV(path);
 
-            for (int j = 0; j < listFiles.size(); j++)
+            if (statusConvert != "0")
             {
-                QString filePath = listFiles[i];
-                ConvertCSV(filePath);
+                return statusConvert;
             }
         }
-*/
-        // Error if input data is not directory and file
-        if (!isInputDir && !isInputFile)
+        else
         {
-            QString mes = "Input data is not directory and file";
-            log->WriteIntoLog(mes);
+            statusUpload = "Input data is not file";
+            return statusUpload;
         }
     }
+
+	return statusUpload;
 }
