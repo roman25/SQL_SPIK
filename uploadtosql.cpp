@@ -11,21 +11,36 @@ UploadToSQL::~UploadToSQL()
 {
 }
 
-
-QStringList UploadToSQL::GetFiles(QString path)
+QString UploadToSQL::CheckLotExists(QString lotName, QString startTime)
 {
-    /*!
-        Gets csv files from input directory
-    */
+    QString statusLotExists;
+    QSqlQuery query;     
+    SQLQueries expession;
+    QString sQuery = expession.checkDataUploadedToSQLServer.arg(lotName).arg(startTime);
 
-    // Define filter to find files in directory
-	QStringList filters{"*.csv"};
+    bool succsessQuery = query.exec(sQuery);
 
-    // Get files in directory
-    QDir recoredDir(path);
-	QStringList listFiles = recoredDir.entryList(filters, QDir::Files);	
+    if (!succsessQuery)
+    {
+        statusLotExists = query.lastError().text();
+        return statusLotExists;
+    }
+    else
+    {
+        statusLotExists = "0";
+    }
 
-	return listFiles;
+    int countRecords = query.numRowsAffected();
+    if (countRecords > 0)
+    {
+        statusLotExists = "Data exists";
+    }
+    else
+    {
+        statusLotExists = "0";
+    }
+
+    return statusLotExists;
 }
 
 QString UploadToSQL::ConvertCSV(QString dataPath)
@@ -94,6 +109,14 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
                 // Get start time from file
 				startTime = tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
 					" " + tempList[1] + ":" + tempList[2] + ":" + tempList[3];
+
+                QString statusLotExists = CheckLotExists(lotName ,startTime);
+
+                if (statusLotExists != "0")
+                {
+                    return statusLotExists;
+                }
+
 				count++;
 			}
 
@@ -186,18 +209,22 @@ QString UploadToSQL::CreateTable()
 
     // Get predefined SQL query
     SQLQueries expression;
-    QString sqlQuery = expression.createTable;
+    QString sqlQuery = expression.createBaseTable;
 
     // Execute SQL query
     QSqlQuery query;
-    bool tableCreated = query.exec(sqlQuery);
+    bool baseTableCreated = query.exec(sqlQuery);
+
+    sqlQuery = expression.createGSTable;
+    bool gsTableCreated = query.exec(sqlQuery);
+
 
     // Verify result of SQL execution
-    if (!tableCreated)
+    if ( (!baseTableCreated) || (!gsTableCreated) )
     {       
 
         // Test the table is exists
-        QString sqlQueryExists = expression.checkTableExists;            
+        QString sqlQueryExists = expression.checkBaseTableExists;
         bool tableExist = query.exec(sqlQueryExists);
 
         if (!tableExist)
@@ -208,6 +235,19 @@ QString UploadToSQL::CreateTable()
         {
             statusCreateTable = "0";
         }
+
+        sqlQueryExists = expression.checkGSTableExists;
+        tableExist = query.exec(sqlQueryExists);
+
+        if (!tableExist)
+        {
+            statusCreateTable = "Can not create table";
+        }
+        else
+        {
+            statusCreateTable = "0";
+        }
+
     }
     else
     {
@@ -254,7 +294,7 @@ QString UploadToSQL::Upload(QStringList listCSVFiles)
         }
         else
         {
-            statusUpload = "Input data is not file";
+            statusUpload = path + " is not file";
             return statusUpload;
         }
     }

@@ -10,14 +10,12 @@ class Logging : public QObject
 	Q_OBJECT
 
 public:
-	Logging();
+	Logging(QString pathToDirWithLog);
 	~Logging();
 
 	void WriteIntoLog(QString message);
 
-private:
-	const QString folderName = "logs";
-	const QString fileName	 = "spik_sql.log";
+private:	    
 	QFile file;
 	QTextStream stream;
 };

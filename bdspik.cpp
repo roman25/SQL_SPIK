@@ -1,16 +1,16 @@
-#include "formreportbylot.h"
+#include "bdspik.h"
 
-FormReportByLot::FormReportByLot(QString pathToDir) :
-    m_pathToDirWithCSV(pathToDir)
+BDSpik::BDSpik(QString pathToInputDir, QString pathToOutputDir) :
+    m_pathToDirWithCSV(pathToInputDir), m_pathToDirWithReport(pathToOutputDir)
 {    
 	isConnected = false;
 }
 
-FormReportByLot::~FormReportByLot()
+BDSpik::~BDSpik()
 {	
 }
 
-QString FormReportByLot::JoinToSQLServer()
+QString BDSpik::JoinToSQLServer()
 {
     /*!
         Creates connection to SQL server
@@ -69,7 +69,7 @@ QString FormReportByLot::JoinToSQLServer()
 	return statusConnect;
 }
 
-QString FormReportByLot::UploadDataToSQL(QStringList listCSVFiles)
+QString BDSpik::UploadDataToSQL(QStringList listCSVFiles)
 {
     /*!
         Uploads data on SQL server
@@ -98,7 +98,7 @@ QString FormReportByLot::UploadDataToSQL(QStringList listCSVFiles)
 	return statusUpload;
 }
 
-QString FormReportByLot::FormReport(QString pathToOutputReport)
+QString BDSpik::FormReport()
 {
     /*!
         Forms output report based on input parameters
@@ -227,7 +227,7 @@ QString FormReportByLot::FormReport(QString pathToOutputReport)
 					results.push_back(strRes);
 				}
 
-				winResults = new ProcessResults(results, pathToOutputReport);
+				winResults = new ProcessResults(results, m_pathToDirWithReport);
 				winResults->show();
 
 				QString statusWriteReport = winResults->WriteReport(results);

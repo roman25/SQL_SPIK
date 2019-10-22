@@ -5,7 +5,7 @@
 #include "QDebug"
 #include <QtSql>
 
-#include "formreportbylot.h"
+#include "bdspik.h"
 #include "logging.h"
 
 namespace Ui
@@ -24,7 +24,7 @@ public:
 private:
     Ui::MainWindow *ui;
 
-	FormReportByLot* formReport;
+    BDSpik* bdSpik;
     Logging* log;
 
 private slots:

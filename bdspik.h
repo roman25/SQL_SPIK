@@ -10,21 +10,21 @@
 #include "errors_interpretation.h"
 #include "process_results.h"
 
-class FormReportByLot : public QObject
+class BDSpik : public QObject
 {
 	Q_OBJECT
 
 public:
-    FormReportByLot(QString pathToResultFiles = "");
+    BDSpik(QString pathToInputDir, QString pathToOutputDir);
 
 	QString UploadDataToSQL(QStringList pathToCSVFiles);
 	QString JoinToSQLServer();
-	QString FormReport(QString pathToOutputReport);
+	QString FormReport();
 
-	~FormReportByLot();
+	~BDSpik();
 
 private:
-    QString m_pathToDirWithCSV;
+    QString  m_pathToDirWithCSV, m_pathToDirWithReport;
 	Credentials* credentials;
 	SetDateLotParameters* settingsDateLot;
 	ProcessResults* winResults;

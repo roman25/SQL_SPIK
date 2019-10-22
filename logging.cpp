@@ -1,16 +1,11 @@
 #include "logging.h"
 
-Logging::Logging()	
+Logging::Logging(QString pathToDirWithLog)	
 {
-	QDir().mkdir(folderName);
-
-	QString currentDirectory = QDir::currentPath();
-	const QString fullFilePath = QDir(currentDirectory).filePath(folderName + "/" + fileName);
+    const QString fileName     = "spik_sql.log";
+	const QString fullFilePath = pathToDirWithLog + "/" + fileName;
 
 	file.setFileName(fullFilePath);
-	
-
-
 }
 
 Logging::~Logging()

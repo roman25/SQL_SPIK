@@ -50,13 +50,15 @@ QString ProcessResults::WriteReport(QStringList results)
 		{
 			stream << results[i] + "\n";
 		}
+
+        statusWriteReport = "0";
 	}
     else
     {
-        statusWriteReport = "Some errors occurred while creatig output report";
+        statusWriteReport = "Some errors occurred while creating output report";
     }
 
 	file.close();
-    statusWriteReport = "0";
+    
     return statusWriteReport;
 }

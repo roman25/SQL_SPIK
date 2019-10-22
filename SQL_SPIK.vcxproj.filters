@@ -58,13 +58,13 @@
     <ClCompile Include="process_results.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="formreportbylot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="setdatelotparameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="logging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bdspik.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,13 +84,13 @@
     <QtMoc Include="process_results.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="formreportbylot.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="setdatelotparameters.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="logging.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="bdspik.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
