@@ -44,7 +44,9 @@ public:
         " MKM6 VARCHAR (10), "
         " MKM7 VARCHAR (10), "
         " MKM8 VARCHAR (10), "
-        " DeviceAddress VARCHAR (10) NULL) ");
+        " DeviceAddress VARCHAR (10) NULL, "
+        " InCount int, "
+        " OutCount int) ");
 
 
     QString createGSTable = (" CREATE TABLE [dbo].[T_" + tableGSName + "]"
@@ -66,6 +68,10 @@ public:
     QString insertValues = ("INSERT INTO " + tableNameBase +
         " (LotName, StartDateTime, FinishDateTime, MKM1, MKM2, MKM3, MKM4, MKM5, MKM6, MKM7, MKM8, DeviceAddress) "
         " VALUES ('%1', '%2', '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', '%12') ");
+
+    QString updateInOut = ("UPDATE " + tableNameBase +
+        " SET InCount = %1, OutCount = %2 "
+        " WHERE LotName = '%3' AND StartDateTime = '%4' AND FinishDateTime = '%5'");
 
     QString updateFinishTime = ("UPDATE " + tableNameBase +
         " SET FinishDateTime = '%1' "

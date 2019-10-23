@@ -153,9 +153,29 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
 				{
 					statusConvert = "0";
 				}
-				break;
+                count = -100;
 			}
 			
+            if (line.contains("IN"))
+            {
+                bool convert;
+                int in  = tempList[1].toInt(&convert, 10);
+                int out = tempList[4].toInt(&convert, 10);
+                QString sqlQuery = expession.updateInOut.arg(in).arg(out).arg(lotName).arg(startTime).arg(finishTime);
+
+                bool updateInOut = query.exec(sqlQuery);
+                if (!updateInOut)
+                {
+                    statusConvert = "Some error occured when update IN and OUT values";
+                    return statusConvert;
+                }
+                else
+                {
+                    statusConvert = "0";
+                }
+                break;
+            }
+
             // Collect information from csv
 			if (tempList[0] != "" && tempList[0] != "Device")
 			{
@@ -230,6 +250,7 @@ QString UploadToSQL::CreateTable()
         if (!tableExist)
         {
 			statusCreateTable = "Can not create table";
+            return statusCreateTable;
         }
         else
         {
@@ -242,6 +263,7 @@ QString UploadToSQL::CreateTable()
         if (!tableExist)
         {
             statusCreateTable = "Can not create table";
+            return statusCreateTable;
         }
         else
         {
