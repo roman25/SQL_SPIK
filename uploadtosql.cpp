@@ -146,7 +146,7 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
                 bool updateFinishTime = query.exec(sqlQuery);
 				if (!updateFinishTime)
 				{
-					statusConvert = "Some error occured when update finish time";
+                    statusConvert = "Some error occured when update finish time;" + query.lastError().text();
 					return statusConvert;
 				}
 				else
@@ -166,7 +166,7 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
                 bool updateInOut = query.exec(sqlQuery);
                 if (!updateInOut)
                 {
-                    statusConvert = "Some error occured when update IN and OUT values";
+                    statusConvert = "Some error occured when update IN and OUT values;" + query.lastError().text();
                     return statusConvert;
                 }
                 else
@@ -199,7 +199,7 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
 				bool uploadData = query.exec(sqlQuery);
 				if (!uploadData)
 				{
-					statusConvert = "Some error occured while " + nameWithExt + " uploading";
+					statusConvert = "Some error occured while " + nameWithExt + " uploading;" + query.lastError().text();
 					return statusConvert;
 				}
 				else
@@ -238,7 +238,6 @@ QString UploadToSQL::CreateTable()
     sqlQuery = expression.createGSTable;
     bool gsTableCreated = query.exec(sqlQuery);
 
-
     // Verify result of SQL execution
     if ( (!baseTableCreated) || (!gsTableCreated) )
     {       
@@ -249,7 +248,7 @@ QString UploadToSQL::CreateTable()
 
         if (!tableExist)
         {
-			statusCreateTable = "Can not create table";
+			statusCreateTable = "Can not create table;" + query.lastError().text();
             return statusCreateTable;
         }
         else
@@ -262,7 +261,7 @@ QString UploadToSQL::CreateTable()
 
         if (!tableExist)
         {
-            statusCreateTable = "Can not create table";
+            statusCreateTable = "Can not create table;" + query.lastError().text();
             return statusCreateTable;
         }
         else

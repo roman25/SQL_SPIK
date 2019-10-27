@@ -51,13 +51,15 @@ public:
 
     QString createGSTable = (" CREATE TABLE [dbo].[T_" + tableGSName + "]"
     " ("
-    " [" + tableGSName + "Id] [bigint] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,"
+    " [" + tableGSName + "Id] [bigint] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,"      
     " [LotName] VARCHAR (50) NOT NULL, "
-    " [LotType] VARCHAR (50) NOT NULL, "
-    " [StartDateTime] DATETIME NOT NULL, "
-    " [FinishDateTime] DATETIME NOT NULL, "
-    " [In] [int] NOT NULL,"
-    " [Out][int] NOT NULL,"
+    //" [LotType] VARCHAR (50) NOT NULL, "
+    //" [StartDateTime] DATETIME NOT NULL, "
+      " [StartDateTime] DATETIME NULL, "
+    //" [FinishDateTime] DATETIME NOT NULL, "
+      " [FinishDateTime] DATETIME NULL, "
+      " [InCount] [int] NULL,"
+      " [OutCount][int] NULL,"
         + GetBinText() +
     " CONSTRAINT [PK_GSNTest] PRIMARY KEY CLUSTERED"
     " ("
@@ -83,4 +85,18 @@ public:
         " FROM T_" + tableGSName + 
         " WHERE LotName = '%1' AND StartDateTime = '%2'");
 
+    QString selectDistinctValuesToFormReport = ("SELECT distinct LotName, StartDateTime, FinishDateTime"
+        " from " + tableNameBase);
+
+    QString selectMKMValues = ("SELECT MKM1, MKM2, MKM3, MKM4, MKM5, MKM6, MKM7, MKM8"
+        " from " + tableNameBase + 
+        " WHERE LotName = '%1' AND StartDateTime = '%2' AND FinishDateTime = '%3'");
+
+    QString selectInOut = ("SELECT InCount, OutCount"
+        " from " + tableNameBase + 
+        " WHERE LotName = '%1' AND StartDateTime = '%2' AND FinishDateTime = '%3'");
+
+    QString sqlLineReport = ("(LotName, StartDateTime, FinishDateTime, InCount, OutCount,");
+
+    QString insertValuesReport = ("INSERT INTO T_" + tableGSName);
 };

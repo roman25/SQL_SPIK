@@ -14,6 +14,12 @@ ProcessResults::ProcessResults(QStringList result, QString pathToOutputReport)
 	for (int i = 0; i < rows; i++)
 	{
 		QStringList tempRes = result[i].split(";");
+
+        // Get error
+        bool convert;
+        QString error = tempRes[0];
+        int numError = error.toInt(&convert, 16);
+
 		for (int j = 0; j < 3; j++)
 		{
 			QTableWidgetItem* newCell = new QTableWidgetItem(tempRes[j]);

@@ -236,6 +236,126 @@ QString BDSpik::FormReport()
                     return statusWriteReport;
                 }
                 statusFormReport = "0";
+
+
+                QSqlQuery queryCollectInitialParameters;
+                QString selectDistinctValuesToFormReport = expession.selectDistinctValuesToFormReport;
+                bool selectData = queryCollectInitialParameters.exec(selectDistinctValuesToFormReport);
+
+                if (selectData)
+                {
+                    int countRecords = queryCollectInitialParameters.numRowsAffected();
+
+                    if (countRecords > 0)
+                    {
+                        while (queryCollectInitialParameters.next())
+                        {
+                            QString lotName    = queryCollectInitialParameters.value(0).toString();
+                            QString startTime  = queryCollectInitialParameters.value(1).toString();
+                            QString finishTime = queryCollectInitialParameters.value(2).toString();
+
+                            QString selectMKMValues = expession.selectMKMValues;
+                            selectMKMValues = selectMKMValues.arg(lotName).arg(startTime).arg(finishTime);
+
+
+                            QSqlQuery getMKMValues;
+                            QMap <int, int> collectedResults;
+                            bool getData = getMKMValues.exec(selectMKMValues);
+                            if (getData)
+                            {
+                                while (getMKMValues.next())
+                                {
+                                    for (int i = 0; i < 8; i++)
+                                    {
+                                        QString strKey = getMKMValues.value(i).toString();
+
+                                        bool convert;
+                                        int key = strKey.toInt(&convert, 16);
+                                        if (collectedResults.contains(key))
+                                        {
+                                            int value = collectedResults[key];
+                                            collectedResults[key] = ++value;
+                                        }
+                                        else
+                                        {
+                                            collectedResults[key] = 1;
+                                        }
+                                    }
+                                }
+
+                                statusFormReport = "0";
+                            }
+                            else
+                            {
+                                statusFormReport = getMKMValues.lastError().text();
+                                return statusFormReport;
+                            }
+
+                            QSqlQuery getInOut;
+                            QString selectInOut = expession.selectInOut;
+                            selectInOut = selectInOut.arg(lotName).arg(startTime).arg(finishTime);
+                            getData = getInOut.exec(selectInOut);
+
+                            int in = 0;
+                            int out = 0;
+                            if (getData)
+                            {
+                                while (getInOut.next())
+                                {
+                                    in = getInOut.value(0).toInt();
+                                    out = getInOut.value(1).toInt();
+                                    break;
+
+                                }
+
+                                statusFormReport = "0";
+                            }
+                            else
+                            {
+                                statusFormReport = getInOut.lastError().text();
+                                return statusFormReport;
+                            }
+
+                            QString sqlLineReport = expession.sqlLineReport;
+                            foreach(int key, collectedResults.keys())
+                            {
+                                sqlLineReport += "Bin" + QString::number(key) + ",";
+                                
+                            }
+
+                            sqlLineReport.chop(1);
+                            sqlLineReport += ") values ('" + lotName + "', '" + startTime + "','" + finishTime + "'," + QString::number(in) + "," + QString::number(out) + ",";
+
+                            foreach(int key, collectedResults.keys())
+                            {
+                                sqlLineReport += QString::number(collectedResults[key]) + "," ;
+
+                            }
+
+                            sqlLineReport.chop(1);
+                            sqlLineReport += ")";
+                                                                               
+                            QString insertValuesReport = expession.insertValuesReport + sqlLineReport;
+                            QSqlQuery createSQLReport;
+                                
+                            bool inserted = createSQLReport.exec(insertValuesReport);
+
+                            if (inserted)
+                            {
+                                statusFormReport = "0";
+                            }
+                            else
+                            {
+                                statusFormReport = createSQLReport.lastError().text();
+                                return statusFormReport;
+
+                            }                            
+                        }
+                    }
+                }
+
+
+
 			}
 			else
 			{
