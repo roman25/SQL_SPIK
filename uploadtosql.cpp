@@ -33,7 +33,7 @@ QString UploadToSQL::CheckLotExists(QString lotName, QString startTime)
     int countRecords = query.numRowsAffected();
     if (countRecords > 0)
     {
-        statusLotExists = "Data exists";
+        statusLotExists = "Lot '" + lotName + "' exists";
     }
     else
     {
@@ -110,11 +110,11 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
 				startTime = tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
 					" " + tempList[1] + ":" + tempList[2] + ":" + tempList[3];
 
-                QString statusLotExists = CheckLotExists(lotName ,startTime);
+                statusConvert = CheckLotExists(lotName ,startTime);
 
-                if (statusLotExists != "0")
+                if (statusConvert != "0")
                 {
-                    return statusLotExists;
+                    return statusConvert;
                 }
 
 				count++;
@@ -232,23 +232,25 @@ QString UploadToSQL::CreateTable()
     QString sqlQuery = expression.createBaseTable;
 
     // Execute SQL query
-    QSqlQuery query;
-    bool baseTableCreated = query.exec(sqlQuery);
+    QSqlQuery queryBaseTable;
+    bool baseTableCreated = queryBaseTable.exec(sqlQuery);
 
     sqlQuery = expression.createGSTable;
-    bool gsTableCreated = query.exec(sqlQuery);
+    QSqlQuery gsTable;
+    bool gsTableCreated = gsTable.exec(sqlQuery);
 
     // Verify result of SQL execution
     if ( (!baseTableCreated) || (!gsTableCreated) )
     {       
 
         // Test the table is exists
+        QSqlQuery checkTable;
         QString sqlQueryExists = expression.checkBaseTableExists;
-        bool tableExist = query.exec(sqlQueryExists);
+        bool tableExist = checkTable.exec(sqlQueryExists);
 
         if (!tableExist)
         {
-			statusCreateTable = "Can not create table;" + query.lastError().text();
+			statusCreateTable = "Can not create table;" + checkTable.lastError().text();
             return statusCreateTable;
         }
         else
@@ -257,11 +259,11 @@ QString UploadToSQL::CreateTable()
         }
 
         sqlQueryExists = expression.checkGSTableExists;
-        tableExist = query.exec(sqlQueryExists);
+        tableExist = checkTable.exec(sqlQueryExists);
 
         if (!tableExist)
         {
-            statusCreateTable = "Can not create table;" + query.lastError().text();
+            statusCreateTable = "Can not create table;" + checkTable.lastError().text();
             return statusCreateTable;
         }
         else
@@ -306,11 +308,11 @@ QString UploadToSQL::Upload(QStringList listCSVFiles)
         if (isInputFile)
         {
             // Upload input data
-            QString statusConvert = ConvertCSV(path);
+            statusUpload = ConvertCSV(path);
 
-            if (statusConvert != "0")
+            if (statusUpload != "0")
             {
-                return statusConvert;
+                return statusUpload;
             }
         }
         else

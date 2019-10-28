@@ -195,8 +195,8 @@ QString BDSpik::FormReport()
 
                 if (errors.contains(-1))
                 {
-                    QString statusErrorsInterpretation = errors[-1];
-                    return statusErrorsInterpretation;
+                    statusFormReport = errors[-1];
+                    return statusFormReport;
                 }
 
 				QStringList results;
@@ -230,10 +230,10 @@ QString BDSpik::FormReport()
 				winResults = new ProcessResults(results, m_pathToDirWithReport);
 				winResults->show();
 
-				QString statusWriteReport = winResults->WriteReport(results);
-                if (statusWriteReport != "0")
+                statusFormReport = winResults->WriteReport(results);
+                if (statusFormReport != "0")
                 {
-                    return statusWriteReport;
+                    return statusFormReport;
                 }
                 statusFormReport = "0";
 
