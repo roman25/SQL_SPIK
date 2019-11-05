@@ -18,9 +18,7 @@ public:
 
 	QString WriteReport(QStringList results);
 private:
-	Ui::ProcessResults* ui;
-    Logging* log;
+	Ui::ProcessResults* ui;    
 	QString m_pathToReport;
-    
-
+    QList <QTableWidgetItem *> tableData;
 };

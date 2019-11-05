@@ -7,7 +7,11 @@ BDSpik::BDSpik(QString pathToInputDir, QString pathToOutputDir) :
 }
 
 BDSpik::~BDSpik()
-{	
+{
+    foreach (ProcessResults *objRes, procRes)
+    {
+        delete objRes;
+    }
 }
 
 QString BDSpik::JoinToSQLServer()
@@ -20,7 +24,7 @@ QString BDSpik::JoinToSQLServer()
     QString statusConnect;
 
     // Open window to get credentials
-	credentials = new Credentials();
+    Credentials *credentials = new Credentials();
 	if (credentials->exec() == QDialog::Accepted)
 	{
 
@@ -81,7 +85,7 @@ QString BDSpik::UploadDataToSQL(QStringList listCSVFiles)
     // Upload if connection is present
     if (isConnected)
 	{        
-        UploadToSQL* uploadData = new UploadToSQL(m_pathToDirWithCSV);
+        UploadToSQL *uploadData = new UploadToSQL(m_pathToDirWithCSV);
 		statusUpload = uploadData->Upload(listCSVFiles);
 		delete uploadData;
 
@@ -107,7 +111,7 @@ QString BDSpik::FormReport()
     QString statusFormReport;
 
     // Open window with parameters
-	settingsDateLot = new SetDateLotParameters();
+    SetDateLotParameters *settingsDateLot = new SetDateLotParameters();
 
 	if (settingsDateLot->exec() == QDialog::Accepted)
 	{
@@ -119,15 +123,17 @@ QString BDSpik::FormReport()
 		QSqlQuery query;
 		QString lotName = settingsDateLot->getLotName();
 
+        // Check - using lot names only
 		if (useLotNameOnly)
 		{
 			sQuery = expession.selectionOnlyLotName.arg(lotName);
 		}
 		else
 		{
-
+            // Get date parameters
 			QList <int> dateSettings = settingsDateLot->getDateSettings();
 
+            // Choose settings based on single date or range
 			if (dateSettings[0] == 9999)
 			{
 				int startDay    = dateSettings[1];
@@ -155,28 +161,34 @@ QString BDSpik::FormReport()
 			}
 		}
 
+        // Choose parameters when using date and lot name
 		if (!lotName.isEmpty())
 		{
 			sQuery = sQuery + expession.selectionAdditionalLotName.arg(lotName);
 		}
 
-		bool succsessQuery = query.exec(sQuery);
-		
+        // Execute expression
+		bool succsessQuery = query.exec(sQuery);		
 		if (succsessQuery)
 		{
+            // Get count records of returned data
 			int countRecords = query.numRowsAffected();
 
 			if (countRecords > 0)
 			{
+                // Read data from SQL
 				QMap <int, int> dataFromSQL;
 				while (query.next())
 				{
+                    // Values 3 and 10 because MKM columns have order from 3 to 10
 					for (int i = 3; i < 11; i++)
 					{
-                        QString strKey = query.value(i).toString();
-                        
+                        // Read value and convert it from hex to dec
+                        QString strKey = query.value(i).toString();                        
                         bool convert;
                         int key = strKey.toInt(&convert, 16);
+
+                        // Collect data from SQL
 						if (dataFromSQL.contains(key))
 						{
 							int value        = dataFromSQL[key];
@@ -189,18 +201,20 @@ QString BDSpik::FormReport()
 					}
 				}
 
+                // Get errors description
 				ErrorsInterpretation* erInter = new ErrorsInterpretation();
 				QMap <int, QString> errors    = erInter->getErrorsInterpretation();                
 				delete erInter;
 
+                // Check error from SQL in predefined description
                 if (errors.contains(-1))
                 {
                     statusFormReport = errors[-1];
                     return statusFormReport;
                 }
 
+                // Collecting results to output to report
 				QStringList results;
-
 				foreach(int key, dataFromSQL.keys())
 				{
 					QString strRes = "0x";
@@ -227,9 +241,12 @@ QString BDSpik::FormReport()
 					results.push_back(strRes);
 				}
 
-				winResults = new ProcessResults(results, m_pathToDirWithReport);
+                // Create window with report
+                ProcessResults *winResults = new ProcessResults(results, m_pathToDirWithReport);
+                procRes.append(winResults);
 				winResults->show();
 
+                // Write csv report
                 statusFormReport = winResults->WriteReport(results);
                 if (statusFormReport != "0")
                 {
@@ -368,6 +385,8 @@ QString BDSpik::FormReport()
 
 		}
 	}
+
+    delete settingsDateLot;
 
 	return statusFormReport;
 }

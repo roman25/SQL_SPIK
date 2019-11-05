@@ -13,7 +13,7 @@ public:
     QString checkBaseTableExists = "IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'" + tableNameBase + "')"
         " RAISERROR('No tables',16,1);";
 
-    QString checkGSTableExists = "IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'T_" + tableGSName + "')"
+    QString checkGSTableExists = "IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'" + tableGSName + "')"
         " RAISERROR('No tables',16,1);";
 
     QString selectionByDate = ("SELECT LotName, StartDateTime, FinishDateTime, MKM1, MKM2, MKM3, MKM4, MKM5, MKM6, MKM7, MKM8, DeviceAddress "
@@ -49,7 +49,7 @@ public:
         " OutCount int) ");
 
 
-    QString createGSTable = (" CREATE TABLE [dbo].[T_" + tableGSName + "]"
+    QString createGSTable = (" CREATE TABLE [dbo].[" + tableGSName + "]"
     " ("
     " [" + tableGSName + "Id] [bigint] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,"      
     " [LotName] VARCHAR (50) NOT NULL, "
@@ -96,5 +96,5 @@ public:
 
     QString sqlLineReport = ("(LotName, StartDateTime, FinishDateTime, InCount, OutCount,");
 
-    QString insertValuesReport = ("INSERT INTO T_" + tableGSName);
+    QString insertValuesReport = ("INSERT INTO " + tableGSName);
 };

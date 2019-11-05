@@ -25,8 +25,6 @@ public:
 
 private:
     QString  m_pathToDirWithCSV, m_pathToDirWithReport;
-	Credentials* credentials;
-	SetDateLotParameters* settingsDateLot;
-	ProcessResults* winResults;
-	bool isConnected;
+    bool isConnected;
+    QList <ProcessResults *> procRes;
 };

@@ -22,7 +22,8 @@ ProcessResults::ProcessResults(QStringList result, QString pathToOutputReport)
 
 		for (int j = 0; j < 3; j++)
 		{
-			QTableWidgetItem* newCell = new QTableWidgetItem(tempRes[j]);
+			QTableWidgetItem *newCell = new QTableWidgetItem(tempRes[j]);
+            tableData.append(newCell);
 			ui->twResults->setItem(i, j, newCell);
 		}									
 	}	
@@ -30,7 +31,10 @@ ProcessResults::ProcessResults(QStringList result, QString pathToOutputReport)
 
 ProcessResults::~ProcessResults()
 {
-
+    foreach(QTableWidgetItem *newCell, tableData)
+    {
+        delete newCell;
+    }
 }
 
 QString ProcessResults::WriteReport(QStringList results)
