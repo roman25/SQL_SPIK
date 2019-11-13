@@ -80,7 +80,7 @@ public:
     QString setDateFortmat = ("SET LANGUAGE English SET DATEFORMAT ymd");
 
     QString checkDataUploadedToSQLServer = ("SELECT LotName, StartDateTime"
-        " FROM T_" + tableGSName + 
+        " FROM " + tableGSName + 
         " WHERE LotName = '%1' AND StartDateTime = '%2'");
 
     QString selectDistinctValuesToFormReport = ("SELECT distinct LotName, StartDateTime, FinishDateTime"

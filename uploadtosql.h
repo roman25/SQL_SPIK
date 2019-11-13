@@ -28,5 +28,6 @@ private:
 	QString ConvertCSV(QString dataPath);
 	QString CreateTable();
     QString CheckLotExists(QString lotName, QString startTime);
+    QString UploadToReportTable();
 	
 };

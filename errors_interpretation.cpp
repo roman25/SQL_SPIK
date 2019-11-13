@@ -62,7 +62,7 @@ QMap <int, QString> ErrorsInterpretation::getErrorsInterpretation()
 	}
     else
     {
-        QString mes = fullFilePath + " can not open the template with errors";
+        QString mes = fullFilePath + " - the file not found";
 		errors[-1] = mes;
         
     }

@@ -11,6 +11,131 @@ UploadToSQL::~UploadToSQL()
 {
 }
 
+
+QString UploadToSQL::UploadToReportTable()
+{
+    QString statusFormReport;
+    SQLQueries expession;
+    QSqlQuery queryCollectInitialParameters;
+    QString selectDistinctValuesToFormReport = expession.selectDistinctValuesToFormReport;
+    bool selectData = queryCollectInitialParameters.exec(selectDistinctValuesToFormReport);
+
+    if (selectData)
+    {
+        int countRecords = queryCollectInitialParameters.numRowsAffected();
+
+        if (countRecords > 0)
+        {
+            while (queryCollectInitialParameters.next())
+            {
+                QString lotName = queryCollectInitialParameters.value(0).toString();
+                QString startTime = queryCollectInitialParameters.value(1).toString();
+                QString finishTime = queryCollectInitialParameters.value(2).toString();
+
+                QString selectMKMValues = expession.selectMKMValues;
+                selectMKMValues = selectMKMValues.arg(lotName).arg(startTime).arg(finishTime);
+
+
+                QSqlQuery getMKMValues;
+                QMap <int, int> collectedResults;
+                bool getData = getMKMValues.exec(selectMKMValues);
+                if (getData)
+                {
+                    while (getMKMValues.next())
+                    {
+                        for (int i = 0; i < 8; i++)
+                        {
+                            QString strKey = getMKMValues.value(i).toString();
+
+                            bool convert;
+                            int key = strKey.toInt(&convert, 16);
+                            if (collectedResults.contains(key))
+                            {
+                                int value = collectedResults[key];
+                                collectedResults[key] = ++value;
+                            }
+                            else
+                            {
+                                collectedResults[key] = 1;
+                            }
+                        }
+                    }
+
+                    statusFormReport = "0";
+                }
+                else
+                {
+                    statusFormReport = getMKMValues.lastError().text();
+                    return statusFormReport;
+                }
+
+                QSqlQuery getInOut;
+                QString selectInOut = expession.selectInOut;
+                selectInOut = selectInOut.arg(lotName).arg(startTime).arg(finishTime);
+                getData = getInOut.exec(selectInOut);
+
+                int in = 0;
+                int out = 0;
+                if (getData)
+                {
+                    while (getInOut.next())
+                    {
+                        in = getInOut.value(0).toInt();
+                        out = getInOut.value(1).toInt();
+                        break;
+
+                    }
+
+                    statusFormReport = "0";
+                }
+                else
+                {
+                    statusFormReport = getInOut.lastError().text();
+                    return statusFormReport;
+                }
+
+                QString sqlLineReport = expession.sqlLineReport;
+                foreach(int key, collectedResults.keys())
+                {
+                    sqlLineReport += "Bin" + QString::number(key) + ",";
+
+                }
+
+                sqlLineReport.chop(1);
+                sqlLineReport += ") values ('" + lotName + "', '" + startTime + "','" + finishTime + "'," + QString::number(in) + "," + QString::number(out) + ",";
+
+                foreach(int key, collectedResults.keys())
+                {
+                    sqlLineReport += QString::number(collectedResults[key]) + ",";
+
+                }
+
+                sqlLineReport.chop(1);
+                sqlLineReport += ")";
+
+                QString insertValuesReport = expession.insertValuesReport + sqlLineReport;
+                QSqlQuery createSQLReport;
+
+                bool inserted = createSQLReport.exec(insertValuesReport);
+
+                if (inserted)
+                {
+                    statusFormReport = "0";
+                }
+                else
+                {
+                    statusFormReport = createSQLReport.lastError().text();
+                    return statusFormReport;
+
+                }
+            }
+        }
+}
+
+    return statusFormReport;
+
+}
+
 QString UploadToSQL::CheckLotExists(QString lotName, QString startTime)
 {
     QString statusLotExists;
@@ -146,13 +271,14 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
                 bool updateFinishTime = query.exec(sqlQuery);
 				if (!updateFinishTime)
 				{
-                    statusConvert = "Some error occured when update finish time;" + query.lastError().text();
+                    statusConvert = "Can not execute SQL query to update finish time;" + query.lastError().text();
 					return statusConvert;
 				}
 				else
 				{
 					statusConvert = "0";
 				}
+
                 count = -100;
 			}
 			
@@ -166,13 +292,14 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
                 bool updateInOut = query.exec(sqlQuery);
                 if (!updateInOut)
                 {
-                    statusConvert = "Some error occured when update IN and OUT values;" + query.lastError().text();
+                    statusConvert = "Can not execute SQL query to update IN and OUT values;" + query.lastError().text();
                     return statusConvert;
                 }
                 else
                 {
                     statusConvert = "0";
                 }
+
                 break;
             }
 
@@ -199,7 +326,7 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
 				bool uploadData = query.exec(sqlQuery);
 				if (!uploadData)
 				{
-					statusConvert = "Some error occured while " + nameWithExt + " uploading;" + query.lastError().text();
+					statusConvert = "Can not execute SQL query to upload " + nameWithExt + "; " + query.lastError().text();
 					return statusConvert;
 				}
 				else
@@ -246,11 +373,11 @@ QString UploadToSQL::CreateTable()
         // Test the table is exists
         QSqlQuery checkTable;
         QString sqlQueryExists = expression.checkBaseTableExists;
-        bool tableExist = checkTable.exec(sqlQueryExists);
+        bool baseTableExist = checkTable.exec(sqlQueryExists);
 
-        if (!tableExist)
+        if (!baseTableExist)
         {
-			statusCreateTable = "Can not create table;" + checkTable.lastError().text();
+			statusCreateTable = "Can not create table; " + checkTable.lastError().text();
             return statusCreateTable;
         }
         else
@@ -259,11 +386,11 @@ QString UploadToSQL::CreateTable()
         }
 
         sqlQueryExists = expression.checkGSTableExists;
-        tableExist = checkTable.exec(sqlQueryExists);
+        bool tableExist = checkTable.exec(sqlQueryExists);
 
         if (!tableExist)
         {
-            statusCreateTable = "Can not create table;" + checkTable.lastError().text();
+            statusCreateTable = "Can not create table; " + checkTable.lastError().text();
             return statusCreateTable;
         }
         else
@@ -320,6 +447,13 @@ QString UploadToSQL::Upload(QStringList listCSVFiles)
             statusUpload = path + " is not file";
             return statusUpload;
         }
+    }
+
+
+    statusUpload = UploadToReportTable();
+    if (statusUpload != "0")
+    {
+        return statusUpload;
     }
 
 	return statusUpload;
