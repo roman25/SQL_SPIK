@@ -46,7 +46,7 @@ QString BDSpik::JoinToSQLServer()
 		if (!db.open())
 		{
             // Get errors
-			statusConnect = QSqlError(db.lastError()).text();
+			statusConnect = "In BDSpik::JoinToSQLServer " + QSqlError(db.lastError()).text();
 		}
 		else
 		{
@@ -58,7 +58,7 @@ QString BDSpik::JoinToSQLServer()
 			bool execute = query.exec(sQuery);
 			if (!execute)
 			{
-				statusConnect = "Some errors occurred when change date format of SQL server";
+				statusConnect = "In BDSpik::JoinToSQLServer errors when change date format of SQL server";
 			}
 			else
 			{
@@ -96,7 +96,7 @@ QString BDSpik::UploadDataToSQL(QStringList listCSVFiles)
 	}
 	else
 	{
-		statusUpload = "Connection to SQL not found";
+		statusUpload = "In BDSpik::UploadDataToSQL connection to SQL not found";
 	}
 
 	return statusUpload;
@@ -257,12 +257,12 @@ QString BDSpik::FormReport()
 			}
 			else
 			{
-				statusFormReport = "No data on SQL server for your input parameters";
+				statusFormReport = "In BDSpik::FormReport no data on SQL server for your input parameters";
 			}
 		}
 		else
 		{
-			statusFormReport = query.lastError().text();
+			statusFormReport = "In BDSpik::FormReport " + query.lastError().text();
 
 		}
 	}

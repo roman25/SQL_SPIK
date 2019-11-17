@@ -65,7 +65,7 @@ QString UploadToSQL::UploadToReportTable()
                 }
                 else
                 {
-                    statusFormReport = getMKMValues.lastError().text();
+                    statusFormReport = "In UploadToSQL::UploadToReportTable; " + getMKMValues.lastError().text();
                     return statusFormReport;
                 }
 
@@ -90,7 +90,7 @@ QString UploadToSQL::UploadToReportTable()
                 }
                 else
                 {
-                    statusFormReport = getInOut.lastError().text();
+                    statusFormReport = "In UploadToSQL::UploadToReportTable; " + getInOut.lastError().text();
                     return statusFormReport;
                 }
 
@@ -124,13 +124,13 @@ QString UploadToSQL::UploadToReportTable()
                 }
                 else
                 {
-                    statusFormReport = createSQLReport.lastError().text();
+                    statusFormReport = "In UploadToSQL::UploadToReportTable; " + createSQLReport.lastError().text();
                     return statusFormReport;
 
                 }
             }
         }
-}
+    }
 
     return statusFormReport;
 
@@ -147,7 +147,7 @@ QString UploadToSQL::CheckLotExists(QString lotName, QString startTime)
 
     if (!succsessQuery)
     {
-        statusLotExists = query.lastError().text();
+        statusLotExists = "In UploadToSQL::CheckLotExists; " + query.lastError().text();
         return statusLotExists;
     }
     else
@@ -158,7 +158,7 @@ QString UploadToSQL::CheckLotExists(QString lotName, QString startTime)
     int countRecords = query.numRowsAffected();
     if (countRecords > 0)
     {
-        statusLotExists = "Lot '" + lotName + "' exists";
+        statusLotExists = "In UploadToSQL::CheckLotExists; Lot '" + lotName + "' exists";
     }
     else
     {
@@ -271,7 +271,7 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
                 bool updateFinishTime = query.exec(sqlQuery);
 				if (!updateFinishTime)
 				{
-                    statusConvert = "Can not execute SQL query to update finish time;" + query.lastError().text();
+                    statusConvert = "In UploadToSQL::ConvertCSV can not execute SQL query to update finish time;" + query.lastError().text();
 					return statusConvert;
 				}
 				else
@@ -292,7 +292,7 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
                 bool updateInOut = query.exec(sqlQuery);
                 if (!updateInOut)
                 {
-                    statusConvert = "Can not execute SQL query to update IN and OUT values;" + query.lastError().text();
+                    statusConvert = "In UploadToSQL::ConvertCSV can not execute SQL query to update IN and OUT values;" + query.lastError().text();
                     return statusConvert;
                 }
                 else
@@ -326,7 +326,7 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
 				bool uploadData = query.exec(sqlQuery);
 				if (!uploadData)
 				{
-					statusConvert = "Can not execute SQL query to upload " + nameWithExt + "; " + query.lastError().text();
+					statusConvert = "In UploadToSQL::ConvertCSV can not execute SQL query to upload " + nameWithExt + "; " + query.lastError().text();
 					return statusConvert;
 				}
 				else
@@ -339,7 +339,7 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
 	}
 	else
 	{
-		statusConvert = "Can not open " + dataPath;
+		statusConvert = "In UploadToSQL::ConvertCSV can not open " + dataPath;
 		
 	}
 
@@ -377,7 +377,7 @@ QString UploadToSQL::CreateTable()
 
         if (!baseTableExist)
         {
-			statusCreateTable = "Can not create table; " + checkTable.lastError().text();
+			statusCreateTable = "In UploadToSQL::CreateTable can not create table; " + checkTable.lastError().text();
             return statusCreateTable;
         }
         else
@@ -390,7 +390,7 @@ QString UploadToSQL::CreateTable()
 
         if (!tableExist)
         {
-            statusCreateTable = "Can not create table; " + checkTable.lastError().text();
+            statusCreateTable = "In UploadToSQL::CreateTable can not create table; " + checkTable.lastError().text();
             return statusCreateTable;
         }
         else
@@ -444,7 +444,7 @@ QString UploadToSQL::Upload(QStringList listCSVFiles)
         }
         else
         {
-            statusUpload = path + " is not file";
+            statusUpload = "In UploadToSQL::Upload " + path + " is not file";
             return statusUpload;
         }
     }

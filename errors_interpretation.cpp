@@ -54,7 +54,7 @@ QMap <int, QString> ErrorsInterpretation::getErrorsInterpretation()
 			}
 			else
 			{
-				QString mes = "Can not convert hex to dec in " + templateName;
+				QString mes = "In ErrorsInterpretation::getErrorsInterpretation can not convert hex to dec in " + templateName;
 				errors[-1]	= mes;
                 return errors;
 			}
@@ -62,7 +62,7 @@ QMap <int, QString> ErrorsInterpretation::getErrorsInterpretation()
 	}
     else
     {
-        QString mes = fullFilePath + " - the file not found";
+        QString mes = "In ErrorsInterpretation::getErrorsInterpretation " + fullFilePath + " - the file not found";
 		errors[-1] = mes;
         
     }

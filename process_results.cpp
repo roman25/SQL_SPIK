@@ -65,7 +65,7 @@ QString ProcessResults::WriteReport(QStringList results)
 	}
     else
     {
-        statusWriteReport = "Can not create output report";
+        statusWriteReport = "In ProcessResults::WriteReport can not create output report";
     }
 
 	file.close();
