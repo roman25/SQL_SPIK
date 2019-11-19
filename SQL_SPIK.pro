@@ -25,9 +25,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+    bdspik.cpp \
     credentials.cpp \
-    errors_interpretation.cpp \
-    formreportbylot.cpp \
+    errors_interpretation.cpp \    
     logging.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -37,9 +37,9 @@ SOURCES += \
     uploadtosql.cpp
 
 HEADERS += \
+    bdspik.h \
     credentials.h \
-    errors_interpretation.h \
-    formreportbylot.h \
+    errors_interpretation.h \    
     logging.h \
     mainwindow.h \
     process_results.h \    
