@@ -49,14 +49,19 @@ QString UploadToSQL::UploadToReportTable()
 
                             bool convert;
                             int key = strKey.toInt(&convert, 16);
-                            if (collectedResults.contains(key))
+
+                            if (convert)
                             {
-                                int value = collectedResults[key];
-                                collectedResults[key] = ++value;
-                            }
-                            else
-                            {
-                                collectedResults[key] = 1;
+
+                                if (collectedResults.contains(key))
+                                {
+                                    int value = collectedResults[key];
+                                    collectedResults[key] = ++value;
+                                }
+                                else
+                                {
+                                    collectedResults[key] = 1;
+                                }
                             }
                         }
                     }
@@ -284,20 +289,25 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
 			
             if (line.contains("IN"))
             {
-                bool convert;
-                int in  = tempList[1].toInt(&convert, 10);
-                int out = tempList[4].toInt(&convert, 10);
-                QString sqlQuery = expession.updateInOut.arg(in).arg(out).arg(lotName).arg(startTime).arg(finishTime);
+                bool convertIn, convertOut;
+                int in  = tempList[1].toInt(&convertIn, 10);
+                int out = tempList[4].toInt(&convertOut, 10);
 
-                bool updateInOut = query.exec(sqlQuery);
-                if (!updateInOut)
+                if (convertIn && convertOut)
                 {
-                    statusConvert = "In UploadToSQL::ConvertCSV can not execute SQL query to update IN and OUT values;" + query.lastError().text();
-                    return statusConvert;
-                }
-                else
-                {
-                    statusConvert = "0";
+
+                    QString sqlQuery = expession.updateInOut.arg(in).arg(out).arg(lotName).arg(startTime).arg(finishTime);
+
+                    bool updateInOut = query.exec(sqlQuery);
+                    if (!updateInOut)
+                    {
+                        statusConvert = "In UploadToSQL::ConvertCSV can not execute SQL query to update IN and OUT values;" + query.lastError().text();
+                        return statusConvert;
+                    }
+                    else
+                    {
+                        statusConvert = "0";
+                    }
                 }
 
                 break;

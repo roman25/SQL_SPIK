@@ -188,16 +188,19 @@ QString BDSpik::FormReport()
                         bool convert;
                         int key = strKey.toInt(&convert, 16);
 
-                        // Collect data from SQL
-						if (dataFromSQL.contains(key))
-						{
-							int value        = dataFromSQL[key];
-							dataFromSQL[key] = ++value;
-						}
-						else
-						{
-							dataFromSQL[key] = 1;
-						}
+                        if (convert)
+                        {
+                            // Collect data from SQL
+                            if (dataFromSQL.contains(key))
+                            {
+                                int value = dataFromSQL[key];
+                                dataFromSQL[key] = ++value;
+                            }
+                            else
+                            {
+                                dataFromSQL[key] = 1;
+                            }
+                        }
 					}
 				}
 
