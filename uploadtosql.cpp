@@ -309,6 +309,11 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
                         statusConvert = "0";
                     }
                 }
+                else
+                {
+                    statusConvert = "In UploadToSQL::ConvertCSV can not convert IN or OUT values from text to DEC in " + nameWithExt;
+                    return statusConvert;
+                }
 
                 break;
             }
