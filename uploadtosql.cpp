@@ -136,6 +136,10 @@ QString UploadToSQL::UploadToReportTable()
             }
         }
     }
+    else
+    {
+        statusFormReport = "In UploadToSQL::UploadToReportTable  " + queryCollectInitialParameters.lastError().text();
+    }
 
     return statusFormReport;
 
@@ -311,7 +315,7 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
                 }
                 else
                 {
-                    statusConvert = "In UploadToSQL::ConvertCSV can not convert IN or OUT values from text to DEC in " + nameWithExt;
+                    statusConvert = "In UploadToSQL::ConvertCSV can not convert IN or OUT values from text to DEC in " + nameWithExt + " (line " + line + ")";
                     return statusConvert;
                 }
 
