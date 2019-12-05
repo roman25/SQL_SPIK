@@ -84,7 +84,10 @@ public:
         " WHERE LotName = '%1' AND StartDateTime = '%2'");
 
     QString selectDistinctValuesToFormReport = ("SELECT distinct LotName, StartDateTime, FinishDateTime"
-        " from " + tableNameBase);
+            " FROM " + tableNameBase +
+            " except "
+            "SELECT LotName, StartDateTime, FinishDateTime"
+            " FROM " + tableGSName);
 
     QString selectMKMValues = ("SELECT MKM1, MKM2, MKM3, MKM4, MKM5, MKM6, MKM7, MKM8"
         " from " + tableNameBase + 
@@ -97,4 +100,7 @@ public:
     QString sqlLineReport = ("(LotName, StartDateTime, FinishDateTime, InCount, OutCount,");
 
     QString insertValuesReport = ("INSERT INTO " + tableGSName);
+
+    QString removeIncorrectData = ("DELETE "  + tableNameBase +
+        " WHERE LotName = '%1' AND StartDateTime = '%2'");
 };

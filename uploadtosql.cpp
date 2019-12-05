@@ -207,100 +207,106 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
 		QSqlQuery query;
 
         // Define object to get SQL expressions
-		SQLQueries expession;
+		SQLQueries expression;
 
         // Save start and finish time
         QString startTime;
 		QString finishTime;
 
         // Read csv
-		while (!csvStream.atEnd())
-		{			
+        bool isCollect;
+        int rowNum = 1;
+        while (!csvStream.atEnd())
+        {
 
-			// Read a line
-			QString line = csvStream.readLine();
+            // Read a line
+            QString line = csvStream.readLine();
 
             // Split data to get components
             QStringList tempList = line.split(";");
 
             // Find key row
-			if (line.contains("Start >"))
-			{
+            if (line.contains("Start >"))
+            {
+                isCollect = true;
                 // Set flag as count = 1 to skip first line
-				count = 1;
-				continue;
-			}
-			
+                count = 1;
+                rowNum++;
+                continue;
+            }
+
             // Read base data
-			if (count == 1)
-			{
-				// no '20' in year column of the source data
-				if (tempList[7].size() == 2)
-				{
-					tempList[7] = "20" + tempList[7];
-				}
+            if (count == 1)
+            {
+                // no '20' in year column of the source data
+                if (tempList[7].size() == 2)
+                {
+                    tempList[7] = "20" + tempList[7];
+                }
 
                 // Get start time from file
-				startTime = tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
-					" " + tempList[1] + ":" + tempList[2] + ":" + tempList[3];
+                startTime = tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
+                    " " + tempList[1] + ":" + tempList[2] + ":" + tempList[3];
 
-                statusConvert = CheckLotExists(lotName ,startTime);
+                statusConvert = CheckLotExists(lotName, startTime);
 
                 if (statusConvert != "0")
                 {
                     return statusConvert;
                 }
 
-				count++;
-			}
+                count++;
+            }
 
             // Find key row
-			if (line.contains("End >"))
-			{
+            if (line.contains("End >"))
+            {
+                isCollect = false;
                 // Set flag as count = -1 to skip last line
-				count = -1;
-				continue;
-			}
+                count = -1;
+                rowNum++;
+                continue;
+            }
 
 
-			if (count == -1)
-			{
-				// no '20' in year column of the source data
-				if (tempList[7].size() == 2)
-				{
-					tempList[7] = "20" + tempList[7];
-				}
+            if (count == -1)
+            {
+                // no '20' in year column of the source data
+                if (tempList[7].size() == 2)
+                {
+                    tempList[7] = "20" + tempList[7];
+                }
 
                 // Get finish time from file
-				finishTime = tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
-					" " + tempList[1] + ":" + tempList[2] + ":" + tempList[3];
+                finishTime = tempList[7] + "-" + tempList[6] + "-" + tempList[5] +
+                    " " + tempList[1] + ":" + tempList[2] + ":" + tempList[3];
 
                 // Update finish time in SQL table
-                QString sqlQuery      = expession.updateFinishTime.arg(finishTime, startTime);
+                QString sqlQuery = expression.updateFinishTime.arg(finishTime, startTime);
                 bool updateFinishTime = query.exec(sqlQuery);
-				if (!updateFinishTime)
-				{
+                if (!updateFinishTime)
+                {
                     statusConvert = "In UploadToSQL::ConvertCSV can not execute SQL query to update finish time;" + query.lastError().text();
-					return statusConvert;
-				}
-				else
-				{
-					statusConvert = "0";
-				}
+                    return statusConvert;
+                }
+                else
+                {
+                    statusConvert = "0";
+                }
 
                 count = -100;
-			}
-			
+            }
+
             if (line.contains("IN"))
             {
                 bool convertIn, convertOut;
-                int in  = tempList[1].toInt(&convertIn, 10);
+                int in = tempList[1].toInt(&convertIn, 10);
                 int out = tempList[4].toInt(&convertOut, 10);
 
                 if (convertIn && convertOut)
                 {
 
-                    QString sqlQuery = expession.updateInOut.arg(in).arg(out).arg(lotName).arg(startTime).arg(finishTime);
+                    QString sqlQuery = expression.updateInOut.arg(in).arg(out).arg(lotName).arg(startTime).arg(finishTime);
 
                     bool updateInOut = query.exec(sqlQuery);
                     if (!updateInOut)
@@ -322,38 +328,59 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
                 break;
             }
 
+            if ( (isCollect == false) && (line.startsWith("OP") ) )
+            {
+                QString removeIncorrectData = expression.removeIncorrectData.arg(lotName).arg(startTime);
+                QSqlQuery queryremoveIncorrectData;
+                bool deleteIncorrect = queryremoveIncorrectData.exec(removeIncorrectData);
+                if (deleteIncorrect)
+                {
+                    statusConvert = "In UploadToSQL::ConvertCSV - incorrect file structure in " + nameWithExt + ". Line #" + QString::number(rowNum) + " (" + line + ")";
+                }
+                else
+                {
+                    statusConvert = "In UploadToSQL::ConvertCSV can not remove incorrect data on SQL server; " + queryremoveIncorrectData.lastError().text();;
+                }
+                
+                return statusConvert;
+            }
+
             // Collect information from csv
-			if (tempList[0] != "" && tempList[0] != "Device")
-			{
+            if (isCollect)
+            {
+                if (tempList[0] != "" && tempList[0] != "Device")
+                {
 
-				for (int i = 1; i < tempList.size(); i++)
-				{
-					if (tempList[i].startsWith(" "))
-					{
-                        // Remove whitespaces in row
-						tempList[i] = tempList[i].simplified();
-						tempList[i] = "0" + tempList[i];
-					}
-				}
+                    for (int i = 1; i < tempList.size(); i++)
+                    {
+                        if (tempList[i].startsWith(" "))
+                        {
+                            // Remove whitespaces in row
+                            tempList[i] = tempList[i].simplified();
+                            tempList[i] = "0" + tempList[i];
+                        }
+                    }
 
-                // Union data to get SQL query
-				QString sqlQuery = expession.insertValues.arg(lotName).arg(startTime).arg(startTime).
-					arg(tempList[1]).arg(tempList[2]).arg(tempList[3]).arg(tempList[4]).
-					arg(tempList[5]).arg(tempList[6]).arg(tempList[7]).arg(tempList[8]).arg(tempList[0]);
-				
-                // Insert data into SQL table
-				bool uploadData = query.exec(sqlQuery);
-				if (!uploadData)
-				{
-					statusConvert = "In UploadToSQL::ConvertCSV can not execute SQL query to upload " + nameWithExt + "; " + query.lastError().text();
-					return statusConvert;
-				}
-				else
-				{
-					statusConvert = "0";
-				}
-			}
+                    // Union data to get SQL query
+                    QString sqlQuery = expression.insertValues.arg(lotName).arg(startTime).arg(startTime).
+                        arg(tempList[1]).arg(tempList[2]).arg(tempList[3]).arg(tempList[4]).
+                        arg(tempList[5]).arg(tempList[6]).arg(tempList[7]).arg(tempList[8]).arg(tempList[0]);
+
+                    // Insert data into SQL table
+                    bool uploadData = query.exec(sqlQuery);
+                    if (!uploadData)
+                    {
+                        statusConvert = "In UploadToSQL::ConvertCSV can not execute SQL query to upload " + nameWithExt + "; " + query.lastError().text();
+                        return statusConvert;
+                    }
+                    else
+                    {
+                        statusConvert = "0";
+                    }
+                }
+            }
 			count++;
+            rowNum++;
 		}
 	}
 	else
@@ -361,6 +388,13 @@ QString UploadToSQL::ConvertCSV(QString dataPath)
 		statusConvert = "In UploadToSQL::ConvertCSV can not open " + dataPath;
 		
 	}
+
+    statusConvert = UploadToReportTable();
+    if (statusConvert != "0")
+    {
+        return statusConvert;
+    }
+
 
 	return statusConvert;
 }
@@ -466,13 +500,6 @@ QString UploadToSQL::Upload(QStringList listCSVFiles)
             statusUpload = "In UploadToSQL::Upload " + path + " is not file";
             return statusUpload;
         }
-    }
-
-
-    statusUpload = UploadToReportTable();
-    if (statusUpload != "0")
-    {
-        return statusUpload;
     }
 
 	return statusUpload;
